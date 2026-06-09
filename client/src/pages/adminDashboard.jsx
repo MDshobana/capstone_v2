@@ -8,7 +8,7 @@ export function AdminDashboard() {
     const [user, setUser] = useState("");
     const [manageUser, setManageUser] = useState([]);
     useEffect(() => {
-        axios.get('http://localhost:5000/api/auth/checklogin', { withCredentials: true }).then(res => {
+        axios.get('https://capstone-v2-xbv3.onrender.com/api/auth/checklogin', { withCredentials: true }).then(res => {
             setUser(res.data.user);
         }).catch(error => {
             console.error('Error fetching protected data:', error.response?.data || error.message);
@@ -23,7 +23,7 @@ export function AdminDashboard() {
             return;
         }
 
-        axios.get('http://localhost:5000/api/protected/admin/manage-users', { withCredentials: true }).then(res => {
+        axios.get('https://capstone-v2-xbv3.onrender.com/api/protected/admin/manage-users', { withCredentials: true }).then(res => {
             console.log(res.data);
             setManageUser(res.data);
         }).catch(error => {

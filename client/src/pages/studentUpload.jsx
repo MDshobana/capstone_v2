@@ -27,7 +27,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/protected/submit-assignment",
+        "https://capstone-v2-xbv3.onrender.com/api/protected/submit-assignment",
         formData,
         { withCredentials: true }
       );
@@ -59,7 +59,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
   const fetchQuiz = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/protected/quiz/${courseId}`,
+        `https://capstone-v2-xbv3.onrender.com/api/protected/quiz/${courseId}`,
         { withCredentials: true }
       );
 
@@ -73,7 +73,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
   // ✅ Fetch submissions
   const fetchSubmission = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/protected/my-submissions",
+      "https://capstone-v2-xbv3.onrender.com/api/protected/my-submissions",
       { withCredentials: true }
     );
 
@@ -99,7 +99,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/protected/submit-quiz",
+        "https://capstone-v2-xbv3.onrender.com/api/protected/submit-quiz",
         {
           courseId,
           answers
@@ -221,7 +221,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
       {downloadCertificate && (
 
         <a
-          href={`http://localhost:5000/api/protected/certificate/${courseId}`}
+          href={`https://capstone-v2-xbv3.onrender.com/api/protected/certificate/${courseId}`}
           target="_blank"
           rel="noopener noreferrer"
           className="block mt-4 text-blue-600 underline"

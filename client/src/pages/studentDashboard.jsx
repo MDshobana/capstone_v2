@@ -8,7 +8,7 @@ import StudentAssignment from "./studentUpload";
 export function StudentDashboard() {
     const [user, setUser] = useState("");
     useEffect(() => {
-        axios.get('http://localhost:5000/api/auth/checklogin', { withCredentials: true }).then(res => {
+        axios.get('https://capstone-v2-xbv3.onrender.com/api/auth/checklogin', { withCredentials: true }).then(res => {
             setUser(res.data.user);
         }).catch(error => {
             console.error('Error fetching protected data:', error.response?.data || error.message);

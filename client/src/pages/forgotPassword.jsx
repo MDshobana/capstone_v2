@@ -7,7 +7,7 @@ export default function ForgotPassword() {
 
     const handleForgotPassword = async (e) => {
         e.preventDefault();
-        await axios.post("http://localhost:5000/api/auth/forgotpassword", { email });
+        await axios.post("https://capstone-v2-xbv3.onrender.com/api/auth/forgotpassword", { email });
         console.log("Reset password for:", email);
     }
 
@@ -36,7 +36,7 @@ export function ResetPassword() {
             alert("Passwords do not match");
             return;
         }
-        await axios.post(`http://localhost:5000/api/auth/resetpassword/${token}`, {newPassword: passwordData.newPassword} );
+        await axios.post(`https://capstone-v2-xbv3.onrender.com/api/auth/resetpassword/${token}`, {newPassword: passwordData.newPassword} );
         console.log("Reset password to:", passwordData.newPassword);
     }
 

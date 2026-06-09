@@ -22,7 +22,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:5000/api/auth/login', formData, {withCredentials: true} ).then(response => {
+        axios.post('https://capstone-v2-xbv3.onrender.com/api/auth/login', formData, {withCredentials: true} ).then(response => {
             if (response.status === 200) {
                 console.log('Login successful :', response.data)
                 setUser(response.data.user);
@@ -87,7 +87,7 @@ function Login() {
                         onSuccess={async (credentialResponse) => {
                             // console.log(credentialResponse);
                             try {
-                                await axios.post('http://localhost:5000/api/auth/google-login', { token: credentialResponse.credential })
+                                await axios.post('https://capstone-v2-xbv3.onrender.com/api/auth/google-login', { token: credentialResponse.credential })
                             } catch (error) {
                                 console.log('Google Login Failed:', error.response?.data || error.message);
                             }

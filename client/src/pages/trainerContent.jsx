@@ -29,7 +29,7 @@ export function TrainerContent() {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/auth/checklogin', { withCredentials: true }).then(res => {
+        axios.get('https://capstone-v2-xbv3.onrender.com/api/auth/checklogin', { withCredentials: true }).then(res => {
             setUser(res.data.user);
         }).catch(error => {
             console.error('Error fetching protected data:', error.response?.data || error.message);
@@ -39,7 +39,7 @@ export function TrainerContent() {
 
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/protected/courses", {
+        axios.get("https://capstone-v2-xbv3.onrender.com/api/protected/courses", {
             withCredentials: true
         })
             .then(res => {
@@ -52,7 +52,7 @@ export function TrainerContent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (editingId) {
-            await axios.put("http://localhost:5000/api/protected/courses/" + editingId, course, { withCredentials: true });
+            await axios.put("https://capstone-v2-xbv3.onrender.com/api/protected/courses/" + editingId, course, { withCredentials: true });
             alert("Course updated successfully ✅");
             setEditingId(null);
 
@@ -77,7 +77,7 @@ export function TrainerContent() {
 
             try {
                 const res = await axios.post(
-                    "http://localhost:5000/api/protected/courses/upload",
+                    "https://capstone-v2-xbv3.onrender.com/api/protected/courses/upload",
                     formData,
                     { withCredentials: true }
                 );
@@ -99,7 +99,7 @@ export function TrainerContent() {
                 videoRef.current.value = null;
 
                 const updatedCourses = await axios.get(
-                    "http://localhost:5000/api/protected/courses",
+                    "https://capstone-v2-xbv3.onrender.com/api/protected/courses",
                     { withCredentials: true }
                 );
 
@@ -117,11 +117,11 @@ export function TrainerContent() {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete("http://localhost:5000/api/protected/courses/" + courseId, { withCredentials: true });
+            await axios.delete("https://capstone-v2-xbv3.onrender.com/api/protected/courses/" + courseId, { withCredentials: true });
             console.log("Course removed successfully ✅");
 
             const updatedCourses = await axios.get(
-                "http://localhost:5000/api/protected/courses",
+                "https://capstone-v2-xbv3.onrender.com/api/protected/courses",
                 { withCredentials: true }
             );
             setCourses(updatedCourses.data);
@@ -153,7 +153,7 @@ export function TrainerContent() {
 
         try {
             await axios.post(
-                "http://localhost:5000/api/protected/enroll",
+                "https://capstone-v2-xbv3.onrender.com/api/protected/enroll",
                 { courseId },
                 { withCredentials: true }
             );
