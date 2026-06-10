@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import googleAuth from 'google-auth-library';
 import cookies from 'cookie-parser';
+import { Resend } from 'resend';
 
 import authMiddleware from '../middleware/auth.js';
 
@@ -13,13 +14,15 @@ const client = new googleAuth.OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 
 const router = express.Router();
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 async function verifyGoogleToken(token) {
     const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.VITE_GOOGLE_CLIENT_ID,
     });
-    const payload =  ticket.getPayload();
+    const payload = ticket.getPayload();
     return payload;
 }
 
@@ -30,62 +33,107 @@ function generateToken() {
 }
 
 const activationLink = async (email, token) => {
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.sender_email,
-            pass: process.env.sender_password
-        }
-    });
-
-    let mailOptions = {
-        from: process.env.sender_email,
-        to: email,
-        subject: "Activation Link for MyLearning Portal",
-        html: `<p> Dear ${email},</p>
-        <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
-        <a href="https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=${token}">
-        Activate Account
-        </a>
+    try {
+        await resend.emails.send({
+            from: 'onboarding@resend.dev',
+            to: email,
+            subject: "Activation Link for MyLearning Portal",
+            html: `<p> Dear ${email},</p>
+            <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
+            <a href="https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=${token}">
+            Activate Account
+            </a>
         
-        <p>Best regards,</p>
-        <p>MyLearning Portal Team</p>
-        `
-    };
+            <p>Best regards,</p>
+            <p>MyLearning Portal Team</p>`
+        });
+        console.log("✅ Email sent");
+    }
 
-    await transporter.sendMail(mailOptions);
-}
+    catch (error) {
+        console.error("❌ Email failed:", error);
+    }
+};
+
+// let transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: process.env.sender_email,
+//         pass: process.env.sender_password
+//     }
+// });
+
+// let mailOptions = {
+//     from: process.env.sender_email,
+//     to: email,
+//     subject: "Activation Link for MyLearning Portal",
+//     html: `<p> Dear ${email},</p>
+//     <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
+//     <a href="https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=${token}">
+//     Activate Account
+//     </a>
+
+//     <p>Best regards,</p>
+//     <p>MyLearning Portal Team</p>
+//     `
+// };
+
+// await transporter.sendMail(mailOptions);
+// }
 
 
 const forgotPasswodLink = async (email, resetLink) => {
-    let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.sender_email,
-            pass: process.env.sender_password
-        }
-    });
+    try {
+        await resend.emails.send({
+            from: 'onboarding@resend.dev',
+            to: email,
+            subject: "Password Reset Link for MyLearning Portal",
+            html: `<p> Dear ${email},</p>
+            <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
+            <a href="${resetLink}">
+            Reset Password
+            </a>
 
-    let mailOptions = {
-        from: process.env.sender_email,
-        to: email,
-        subject: "Password Reset Link for MyLearning Portal",
-        html: `<p> Dear ${email},</p>
-        <p>We received a request to reset your password for your MyLearning Portal account. Please click the link below to reset your password:</p>
-        <a href="${resetLink}">
-        Reset Password
-        </a>
-        
-        <p>If you did not request a password reset, please ignore this email.</p>
-        
-        <p>Best regards,</p>
-        <p>MyLearning Portal Team</p>
-        `
+            <p>If you did not request a password reset, please ignore this email.</p>
+
+            <p>Best regards,</p>
+            <p>MyLearning Portal Team</p>`
+        });
+        console.log("✅ Email sent");
     }
 
-    await transporter.sendMail(mailOptions);
+    catch (error) {
+        console.error("❌ Email failed:", error);
+    }
+};
+    // let transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     auth: {
+    //         user: process.env.sender_email,
+    //         pass: process.env.sender_password
+    //     }
+    // });
 
-}
+    // let mailOptions = {
+    //     from: process.env.sender_email,
+    //     to: email,
+    //     subject: "Password Reset Link for MyLearning Portal",
+    //     html: `<p> Dear ${email},</p>
+    //     <p>We received a request to reset your password for your MyLearning Portal account. Please click the link below to reset your password:</p>
+    //     <a href="${resetLink}">
+    //     Reset Password
+    //     </a>
+        
+    //     <p>If you did not request a password reset, please ignore this email.</p>
+        
+    //     <p>Best regards,</p>
+    //     <p>MyLearning Portal Team</p>
+    //     `
+    // }
+
+    // await transporter.sendMail(mailOptions);
+
+// }
 
 
 router.post('/forgotpassword', async (req, res) => {
@@ -175,7 +223,7 @@ router.post('/google-login', async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000
         })
 
-        res.json({ message: "Google login successful", user:{email:user.email, role:user.role} });
+        res.json({ message: "Google login successful", user: { email: user.email, role: user.role } });
 
     } catch (error) {
         console.log("Error during Google login:", error)
@@ -245,14 +293,14 @@ router.get('/checklogin', authMiddleware, (req, res) => {
     const token = req.cookies.token;
     if (!token) return res.status(401).json({ message: "Not logged in" });
     const decoded = jwt.verify(token, process.env.secret);
-    res.json({ loggedIn: true, user: { email: decoded.email, firstName: decoded.firstName, lastName:decoded.lastName, role: decoded.role } });
+    res.json({ loggedIn: true, user: { email: decoded.email, firstName: decoded.firstName, lastName: decoded.lastName, role: decoded.role } });
 });
 
 
-router.post('/logout', (req, res)=> {
+router.post('/logout', (req, res) => {
     res.clearCookie("token");
     res.json("Logged out successfully");
-    
+
 })
 
 
@@ -273,13 +321,13 @@ router.post('/login', async (req, res) => {
             console.log("Error generating toekn:", err);
         }
         res.cookie('token', token, {
-            httpOnly:true,
-            secure:true, // process.env.NODE_ENV === 'production',
-            sameSite:'none',
+            httpOnly: true,
+            secure: true, // process.env.NODE_ENV === 'production',
+            sameSite: 'none',
             maxAge: 60 * 60 * 1000
 
         })
-        return res.json({ user: {email:user.email, role:user.role}, message: "Login successful" });
+        return res.json({ user: { email: user.email, role: user.role }, message: "Login successful" });
     });
 
     console.log("Received login data:", req.body);
