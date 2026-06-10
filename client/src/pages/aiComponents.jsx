@@ -9,7 +9,7 @@ function AIAssistant() {
     const handleAsk = async () => {
         try {
             const res = await axios.post(
-                "https://capstone-v2-xbv3.onrender.com/api/protected/chat",
+                "https://api.mylearningportal.site/api/protected/chat",
                 { message: input },
                 { withCredentials: true }
             );

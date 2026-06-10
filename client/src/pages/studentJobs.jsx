@@ -9,7 +9,7 @@ function StudentJobs() {
   // ✅ Fetch all jobs
   const fetchJobs = async () => {
     const res = await axios.get(
-      "https://capstone-v2-xbv3.onrender.com/api/protected/jobs",
+      "https://api.mylearningportal.site/api/protected/jobs",
       { withCredentials: true }
     );
 
@@ -33,7 +33,7 @@ function StudentJobs() {
 
     try {
       await axios.post(
-        "https://capstone-v2-xbv3.onrender.com/api/protected/apply",
+        "https://api.mylearningportal.site/api/protected/apply",
         formData,
         { withCredentials: true }
       );

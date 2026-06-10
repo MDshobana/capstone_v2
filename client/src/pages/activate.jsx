@@ -4,7 +4,7 @@ function Activate() {
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token");
         if(token) {
-            fetch("https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=" + token).then(response => {
+            fetch("https://api.mylearningportal.site/api/auth/activate?token=" + token).then(response => {
                 if(response.ok) {
                     alert("Account activated successfully! You can now log in.");
                 } else {

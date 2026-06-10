@@ -24,7 +24,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://capstone-v2-xbv3.onrender.com/api/auth/register', regFormData);
+            await axios.post('https://api.mylearningportal.site/api/auth/register', regFormData);
 
         } catch (error) {
             console.log("An error occured during registeration:", error.response?.data || error.message);

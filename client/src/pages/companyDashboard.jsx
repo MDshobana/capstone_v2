@@ -16,7 +16,7 @@ export function CompanyDashboard() {
     // ✅ Fetch user
     useEffect(() => {
         axios
-            .get("https://capstone-v2-xbv3.onrender.com/api/auth/checklogin", {
+            .get("https://api.mylearningportal.site/api/auth/checklogin", {
                 withCredentials: true,
             })
             .then((res) => {
@@ -27,7 +27,7 @@ export function CompanyDashboard() {
     // ✅ Fetch jobs
     const fetchJobs = async () => {
         const res = await axios.get(
-            "https://capstone-v2-xbv3.onrender.com/api/protected/company/jobs",
+            "https://api.mylearningportal.site/api/protected/company/jobs",
             { withCredentials: true }
         );
         setJobs(res.data);
@@ -37,7 +37,7 @@ export function CompanyDashboard() {
     const fetchApplications = async (jobId) => {
         setSelectedJobId(jobId);
         const res = await axios.get(
-            `https://capstone-v2-xbv3.onrender.com/api/protected/applications/${jobId}`,
+            `https://api.mylearningportal.site/api/protected/applications/${jobId}`,
             { withCredentials: true }
         );
 
@@ -53,7 +53,7 @@ export function CompanyDashboard() {
     const handlePostJob = async () => {
         try {
             await axios.post(
-                "https://capstone-v2-xbv3.onrender.com/api/protected/jobs",
+                "https://api.mylearningportal.site/api/protected/jobs",
                 { title, description },
                 { withCredentials: true }
             );
@@ -72,7 +72,7 @@ export function CompanyDashboard() {
     // ✅ Shortlist
     const shortlist = async (id) => {
         await axios.put(
-            `https://capstone-v2-xbv3.onrender.com/api/protected/shortlist/${id}`,
+            `https://api.mylearningportal.site/api/protected/shortlist/${id}`,
             {},
             { withCredentials: true }
         );
@@ -149,7 +149,7 @@ export function CompanyDashboard() {
                         <p>{app.email}</p>
 
                         <a
-                            href={`https://capstone-v2-xbv3.onrender.com/${app.resumeUrl}`}
+                            href={`https://api.mylearningportal.site/${app.resumeUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-500 underline"

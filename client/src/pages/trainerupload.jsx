@@ -9,7 +9,7 @@ function TrainerSubmissions({ courseId }) {
 
     useEffect(() => {
         axios.get(
-            `https://capstone-v2-xbv3.onrender.com/api/protected/submissions/${courseId}`,
+            `https://api.mylearningportal.site/api/protected/submissions/${courseId}`,
             { withCredentials: true }
         ).then(res => {
             setSubmissions(res.data);
@@ -19,7 +19,7 @@ function TrainerSubmissions({ courseId }) {
 
     const handleEvaluate = async (id, marks, feedback) => {
         await axios.put(
-            `https://capstone-v2-xbv3.onrender.com/api/protected/evaluate/${id}`,
+            `https://api.mylearningportal.site/api/protected/evaluate/${id}`,
             { marks, feedback },
             { withCredentials: true }
         );
@@ -28,7 +28,7 @@ function TrainerSubmissions({ courseId }) {
 
         // ✅ refresh list
         const res = await axios.get(
-            `https://capstone-v2-xbv3.onrender.com/api/protected/submissions/${courseId}`,
+            `https://api.mylearningportal.site/api/protected/submissions/${courseId}`,
             { withCredentials: true }
         );
 
@@ -85,7 +85,7 @@ function TrainerSubmissions({ courseId }) {
 
         try {
             await axios.post(
-                "https://capstone-v2-xbv3.onrender.com/api/protected/quiz",
+                "https://api.mylearningportal.site/api/protected/quiz",
                 {
                     courseId,
                     questions
@@ -105,7 +105,7 @@ function TrainerSubmissions({ courseId }) {
     const fetchQuiz = async () => {
         try {
             const res = await axios.get(
-                `https://capstone-v2-xbv3.onrender.com/api/protected/quiz/${courseId}`,
+                `https://api.mylearningportal.site/api/protected/quiz/${courseId}`,
                 { withCredentials: true }
             );
 
