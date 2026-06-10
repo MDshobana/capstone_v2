@@ -230,7 +230,7 @@ router.post('/register', async (req, res) => {
             role,
         })
         await newUser.save();
-        await activationLink(newUser.email, activationtoken);
+        activationLink(newUser.email, activationtoken);
         console.log("User registered successfully");
 
     } catch (error) {
