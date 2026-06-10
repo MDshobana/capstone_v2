@@ -10,7 +10,7 @@ export default function NavBar() {
     const useNavigated = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/auth/checklogin", { withCredentials: true }).then((response) => {
+        axios.get("https://capstone-v2-xbv3.onrender.com/api/auth/checklogin", { withCredentials: true }).then((response) => {
             setUser(response.data.user);
         }).catch((error) => {
             setUser(null);
@@ -19,7 +19,7 @@ export default function NavBar() {
     }, []);
 
     const handleLogOut = () => {
-        axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true }).then((response) => {
+        axios.post("https://capstone-v2-xbv3.onrender.com/api/auth/logout", {}, { withCredentials: true }).then((response) => {
             console.log(response.data);
             setUser(null);
             useNavigated("/login");
