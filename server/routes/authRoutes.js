@@ -219,7 +219,9 @@ router.post('/google-login', async (req, res) => {
         res.cookie('token', jwtToken, {
             httpOnly: true,
             secure: true, // process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            sameSite: "none",
+            path: "/",
+            domain: ".onrender.com"
             maxAge: 24 * 60 * 60 * 1000
         })
 
@@ -323,7 +325,9 @@ router.post('/login', async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true, // process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            sameSite: "none",
+            path: "/",
+            domain: ".onrender.com"
             maxAge: 60 * 60 * 1000
 
         })
