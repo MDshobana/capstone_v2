@@ -35,7 +35,7 @@ function generateToken() {
 const activationLink = async (email, token) => {
     try {
         await resend.emails.send({
-            from: 'MyLearning <noreply@send.mylearningportal.site>',
+            from: 'MyLearning <noreply@mylearningportal.site>',
             to: email,
             subject: "Activation Link for MyLearning Portal",
             html: `<p> Dear ${email},</p>
@@ -85,7 +85,7 @@ const activationLink = async (email, token) => {
 const forgotPasswodLink = async (email, resetLink) => {
     try {
         await resend.emails.send({
-            from: 'MyLearning <noreply@send.mylearningportal.site>',
+            from: 'MyLearning <noreply@mylearningportal.site>',
             to: email,
             subject: "Password Reset Link for MyLearning Portal",
             html: `<p> Dear ${email},</p>
