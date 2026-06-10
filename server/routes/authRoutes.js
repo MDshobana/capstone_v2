@@ -44,7 +44,7 @@ const activationLink = async (email, token) => {
         subject: "Activation Link for MyLearning Portal",
         html: `<p> Dear ${email},</p>
         <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
-        <a href="http://localhost:5000/api/auth/activate?token=${token}">
+        <a href="https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=${token}">
         Activate Account
         </a>
         
@@ -104,7 +104,7 @@ router.post('/forgotpassword', async (req, res) => {
 
         await user.save();
 
-        const resetLink = "http://localhost:5173/resetpassword/" + token;
+        const resetLink = "https://capstone-v2-indol.vercel.app/resetpassword/" + token;
 
         await forgotPasswodLink(email, resetLink);
 
@@ -170,8 +170,8 @@ router.post('/google-login', async (req, res) => {
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: false, // process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: true, // process.env.NODE_ENV === 'production',
+            sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         })
 
@@ -274,8 +274,8 @@ router.post('/login', async (req, res) => {
         }
         res.cookie('token', token, {
             httpOnly:true,
-            secure:false, // process.env.NODE_ENV === 'production',
-            sameSite:'strict',
+            secure:true, // process.env.NODE_ENV === 'production',
+            sameSite:'none',
             maxAge: 60 * 60 * 1000
 
         })
