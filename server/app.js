@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",
+        "https://capstone-v2-indol.vercel.app"],
+
     credentials: true
 }));
 
