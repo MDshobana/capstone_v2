@@ -35,12 +35,12 @@ function generateToken() {
 const activationLink = async (email, token) => {
     try {
         await resend.emails.send({
-            from: 'MyLearning <noreply@mylearningportal.site>',
+            from: 'MyLearning <noreply@send.mylearningportal.site>',
             to: email,
             subject: "Activation Link for MyLearning Portal",
             html: `<p> Dear ${email},</p>
             <p>Thank you for registering on MyLearning Portal. Please click the link below to activate your account:</p>
-            <a href="https://capstone-v2-xbv3.onrender.com/api/auth/activate?token=${token}">
+            <a href="https://api.mylearningportal.site/api/auth/activate?token=${token}">
             Activate Account
             </a>
         
@@ -85,7 +85,7 @@ const activationLink = async (email, token) => {
 const forgotPasswodLink = async (email, resetLink) => {
     try {
         await resend.emails.send({
-            from: 'MyLearning <noreply@mylearningportal.site>',
+            from: 'MyLearning <noreply@send.mylearningportal.site>',
             to: email,
             subject: "Password Reset Link for MyLearning Portal",
             html: `<p> Dear ${email},</p>
@@ -152,7 +152,7 @@ router.post('/forgotpassword', async (req, res) => {
 
         await user.save();
 
-        const resetLink = "https://capstone-v2-indol.vercel.app/resetpassword/" + token;
+        const resetLink = "mylearningportal.site/resetpassword/" + token;
 
         await forgotPasswodLink(email, resetLink);
 
@@ -220,7 +220,6 @@ router.post('/google-login', async (req, res) => {
             httpOnly: true,
             secure: true, // process.env.NODE_ENV === 'production',
             sameSite: "none",
-            path: "/",
             maxAge: 24 * 60 * 60 * 1000
         })
 
@@ -325,7 +324,6 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: true, // process.env.NODE_ENV === 'production',
             sameSite: "none",
-            path: "/",
             maxAge: 60 * 60 * 1000
 
         })
