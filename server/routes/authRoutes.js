@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import User from '../models/User.js';
@@ -106,32 +109,32 @@ const forgotPasswodLink = async (email, resetLink) => {
         console.error("❌ Email failed:", error);
     }
 };
-    // let transporter = nodemailer.createTransport({
-    //     service: "gmail",
-    //     auth: {
-    //         user: process.env.sender_email,
-    //         pass: process.env.sender_password
-    //     }
-    // });
+// let transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//         user: process.env.sender_email,
+//         pass: process.env.sender_password
+//     }
+// });
 
-    // let mailOptions = {
-    //     from: process.env.sender_email,
-    //     to: email,
-    //     subject: "Password Reset Link for MyLearning Portal",
-    //     html: `<p> Dear ${email},</p>
-    //     <p>We received a request to reset your password for your MyLearning Portal account. Please click the link below to reset your password:</p>
-    //     <a href="${resetLink}">
-    //     Reset Password
-    //     </a>
-        
-    //     <p>If you did not request a password reset, please ignore this email.</p>
-        
-    //     <p>Best regards,</p>
-    //     <p>MyLearning Portal Team</p>
-    //     `
-    // }
+// let mailOptions = {
+//     from: process.env.sender_email,
+//     to: email,
+//     subject: "Password Reset Link for MyLearning Portal",
+//     html: `<p> Dear ${email},</p>
+//     <p>We received a request to reset your password for your MyLearning Portal account. Please click the link below to reset your password:</p>
+//     <a href="${resetLink}">
+//     Reset Password
+//     </a>
 
-    // await transporter.sendMail(mailOptions);
+//     <p>If you did not request a password reset, please ignore this email.</p>
+
+//     <p>Best regards,</p>
+//     <p>MyLearning Portal Team</p>
+//     `
+// }
+
+// await transporter.sendMail(mailOptions);
 
 // }
 
@@ -298,7 +301,11 @@ router.get('/checklogin', authMiddleware, (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "None"
+    });
     res.json("Logged out successfully");
 
 })

@@ -22,13 +22,50 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 import PDFDocument from "pdfkit";
 import mongoose from 'mongoose';
-
+import Razorpay from "razorpay";
+import Activity from "../models/Activity.js";
 import authMiddleware from '../middleware/auth.js';
 import authorize from '../middleware/authorize.js';
 
 
 const router = express.Router();
 
+
+
+const razorpay = new Razorpay({
+    key_id: process.env.KEY_ID,
+    key_secret: process.env.KEY_SECRET
+});
+
+
+router.post("/create-order", authMiddleware, authorize("student"), async (req, res) => {
+    try {
+        const { amount, courseId } = req.body;
+
+        if (!amount) {
+            return res.status(400).json({ message: "Amount is required" });
+        }
+
+        const options = {
+            amount: amount * 100, // paise
+            currency: "INR",
+            receipt: `receipt_${courseId}`
+        };
+
+        const order = await razorpay.orders.create(options);
+
+        await Activity.create({
+            userId: req.user.id,
+            action: "Enrolled course"
+        });
+
+
+        res.json(order);
+
+    } catch (err) {
+        res.status(500).json({ message: "Order creation failed" });
+    }
+});
 
 
 const storage = new CloudinaryStorage({
@@ -116,6 +153,7 @@ router.post('/courses/upload', authMiddleware, authorize('admin', 'trainer'), up
                 description,
                 category,
                 level,
+                price: Number(req.body.price),
                 thumbnail: croppedThumbnail,
                 video: videoUrl
             });
@@ -162,6 +200,21 @@ router.delete("/courses/:id", authMiddleware, authorize('admin', 'trainer'), asy
     }
 });
 
+
+router.get("/enrolled-courses", authMiddleware, authorize("student"), async (req, res) => {
+    try {
+        const enrollments = await Enrollment.find({
+            userId: req.user.id,
+            isEnrolled: true
+        });
+
+        res.json(enrollments);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch enrolled courses" });
+    }
+});
+
+
 router.post("/enroll", authMiddleware, authorize("student"), async (req, res) => {
     try {
         const { courseId } = req.body;
@@ -185,7 +238,13 @@ router.post("/enroll", authMiddleware, authorize("student"), async (req, res) =>
 
         });
         await enrollment.save();
-        res.json({ message: "Enrolled successfully", isEnrolled: true });
+
+        await Activity.create({
+            userId: req.user.id,
+            action: "Enrolled course"
+        });
+
+        res.json({ message: "Enrolled successfully", enrollment });
     }
     catch (err) {
         console.error(err);
@@ -301,6 +360,24 @@ router.get(
     }
 );
 
+router.delete(
+    "/quiz/:courseId",
+    authMiddleware,
+    authorize("trainer"),
+    async (req, res) => {
+        try {
+            await Quiz.findOneAndDelete({
+                courseId: req.params.courseId
+            });
+
+            res.json({ message: "Quiz deleted ✅" });
+
+        } catch (err) {
+            res.status(500).json({ message: "Delete failed" });
+        }
+    }
+);
+
 
 router.post("/quiz", authMiddleware, authorize("trainer"), async (req, res) => {
     try {
@@ -311,6 +388,31 @@ router.post("/quiz", authMiddleware, authorize("trainer"), async (req, res) => {
                 message: "courseId or questions missing"
             });
         }
+
+        for (let i = 0; i < questions.length; i++) {
+            const q = questions[i];
+
+            if (!q.question || q.question.trim() === "") {
+                return res.status(400).json({ message: `Question ${i + 1} is empty` });
+            }
+
+            if (!q.options || q.options.length < 4 || q.options.some(opt => !opt.trim())) {
+                return res.status(400).json({ message: `Invalid options in Q${i + 1}` });
+            }
+
+            if (!q.correctAnswer || !q.options.includes(q.correctAnswer)) {
+                return res.status(400).json({
+                    message: `Correct answer invalid in Q${i + 1}`
+                });
+            }
+        }
+
+
+        await Activity.create({
+            userId: req.user.id,
+            action: "Enrolled course"
+        });
+
 
         const updatedQuiz = await Quiz.findOneAndUpdate(
             { courseId: new mongoose.Types.ObjectId(courseId) },
@@ -445,12 +547,12 @@ router.get("/company/jobs", authMiddleware, authorize("company"), async (req, re
     res.json(jobs);
 });
 
-router.get("/jobs", authMiddleware, authorize("student"), async (req,res) => {
-    
-    try{
-        const jobs = await Job.find({status:"available"});
+router.get("/jobs", authMiddleware, authorize("student"), async (req, res) => {
+
+    try {
+        const jobs = await Job.find({ status: "available" });
         res.json(jobs);
-    }catch(error){
+    } catch (error) {
         res.json("error fecthing jobs", error)
     }
 });
@@ -478,7 +580,7 @@ router.post("/jobs", authMiddleware, authorize("company"), async (req, res) => {
 
 router.post("/apply", authMiddleware, authorize("student"), uploadResume.single("resume"), async (req, res) => {
     const { jobId } = req.body;
-    const resumeUrl =req.file.path;
+    const resumeUrl = req.file.path;
     const email = req.user.email;
     console.log(email);
     await Application.create({
@@ -487,9 +589,9 @@ router.post("/apply", authMiddleware, authorize("student"), uploadResume.single(
         resumeUrl,
         email
     });
-    
 
-    res.json({ email, message: "Application submitted ✅"});
+
+    res.json({ email, message: "Application submitted ✅" });
 });
 
 
@@ -497,7 +599,7 @@ router.get("/applications/:jobId", authMiddleware, async (req, res) => {
     const jobId = req.params.jobId;
     const apps = await Application.find({ jobId })
         .populate("studentId", "email");
-    
+
     res.json(apps);
 });
 
@@ -511,4 +613,74 @@ router.put("/shortlist/:id", async (req, res) => {
     res.json({ message: "Shortlisted ✅" });
 });
 
+router.get("/admin/analytics", authMiddleware, authorize("admin"), async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const totalCourses = await Course.countDocuments();
+        const totalEnrollments = await Enrollment.countDocuments({ isEnrolled: true });
+        const totalJobs = await Job.countDocuments();
+        const totalApplications = await Application.countDocuments();
+
+        const revenue = await Enrollment.aggregate([
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "courseId",
+                    foreignField: "_id",
+                    as: "course"
+                }
+            },
+            { $unwind: "$course" },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: "$course.price" }
+                }
+            }
+        ]);
+
+        res.json({
+            totalUsers,
+            totalCourses,
+            totalEnrollments,
+            totalJobs,
+            totalApplications,
+            totalRevenue: revenue[0]?.totalRevenue || 0
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Analytics failed" });
+    }
+});
+
+router.get("/admin/activity", authMiddleware, authorize("admin"), async (req, res) => {
+    const logs = await Activity.find()
+        .populate("userId", "email")
+        .sort({ createdAt: -1 });
+
+    res.json(logs);
+});
+
+router.get("/admin/revenue-report", authMiddleware, authorize("admin"), async (req, res) => {
+    const report = await Enrollment.aggregate([
+        {
+            $lookup: {
+                from: "courses",
+                localField: "courseId",
+                foreignField: "_id",
+                as: "course"
+            }
+        },
+        { $unwind: "$course" },
+        {
+            $group: {
+                _id: "$course.title",
+                revenue: { $sum: "$course.price" }
+            }
+        }
+    ]);
+
+    res.json(report);
+});
 export default router;
