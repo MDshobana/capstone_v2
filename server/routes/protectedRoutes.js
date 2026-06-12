@@ -138,10 +138,14 @@ router.post('/courses/upload', authMiddleware, authorize('admin', 'trainer'), up
             const { title, description, category, level } = req.body;
 
 
+            if (!req.files || !req.files.thumbnail || !req.files.video) {
+                return res.status(400).json({ message: "Files missing" });
+            }
+
             const thumbnailFile = req.files['thumbnail'][0];
             const videoFile = req.files['video'][0];
 
-            
+
             const thumbnailUrl = thumbnailFile.path.replace("http://", "https://");
 
             const videoUrl = videoFile.path.replace("http://", "https://");
@@ -268,6 +272,11 @@ router.post(
     async (req, res) => {
         try {
             const { courseId, assignmentName } = req.body;
+
+
+            if (!req.file) {
+                return res.status(400).json({ message: "File missing" });
+            }
 
             if (!courseId || courseId === "undefined") {
                 return res.status(400).json({ message: "Invalid courseId" });
@@ -598,6 +607,11 @@ router.post("/jobs", authMiddleware, authorize("company"), async (req, res) => {
 
 router.post("/apply", authMiddleware, authorize("student"), uploadResume.single("resume"), async (req, res) => {
     const { jobId } = req.body;
+
+    if (!req.file) {
+        return res.status(400).json({ message: "Resume missing" });
+    }
+
     const resumeUrl = req.file.path.replace("http://", "https://");
     const email = req.user.email;
     console.log(email);
