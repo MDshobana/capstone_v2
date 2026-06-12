@@ -33,8 +33,8 @@ jobs:
         working-directory: ./client
         run: npm install
 
-      # - name: Run Frontend Tests
-      #   working-directory: ./client
+      - name: Run Frontend Tests
+        working-directory: ./client
         # run: npm test --if-present
 
 
@@ -48,13 +48,14 @@ jobs:
       #   working-directory: ./server
       #   run: npm run build --if-present
 
+      
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
       - name: Deploy Frontend to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./client
+        working-directory: ./client
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+
 
       - name: Deploy Backend to Render
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
