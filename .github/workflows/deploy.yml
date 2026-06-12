@@ -28,9 +28,15 @@ jobs:
         working-directory: ./server
         run: npm install
 
-      - name: Run Tests
+      
+      - name: Install Frontend
+        working-directory: ./client
+        run: npm install
+
+      - name: Run Frontend Tests
         working-directory: ./client
         run: npm test --if-present
+
 
       - name: Build Frontend
         working-directory: ./client
