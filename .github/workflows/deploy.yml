@@ -42,7 +42,7 @@ jobs:
         working-directory: ./client
         run: npm run build
         env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }} 
 
       # Deploy frontend
       - name: Install Vercel CLI
@@ -50,7 +50,7 @@ jobs:
 
       - name: Deploy Frontend to Vercel
         working-directory: ./client
-        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
 
       # Deploy backend
       - name: Deploy Backend to Render
