@@ -1,18 +1,36 @@
+import { vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Login from "../login";
 import { AuthContext } from "../../components/authContext"; 
-// import Header from "./components/header";
+import { MemoryRouter } from "react-router-dom";
 
-test("shows error if email is empty", () => {
-  render(<Login />);
+vi.mock("@react-oauth/google", () => ({
+  GoogleLogin: () => <div>Google Login Button</div>,
+}));
 
-  const button = screen.getByText("Login");
-  fireEvent.click(button);
+test("shows error if email is empty", async() => {
+  // render(<Login />);
+  const mockSetUser = vi.fn();
+  
+  
+render(
+  <MemoryRouter>
+    <AuthContext.Provider value={{ setUser: mockSetUser }}>
+      <Login />
+    </AuthContext.Provider>
+  </MemoryRouter>
+);
 
-  expect(screen.getByText("Email required")).toBeInTheDocument();
 
+  await userEvent.click(
+    screen.getByRole("button", { name: /login/i })
+  );
 
-});
+  expect(await screen.findByText(/email required/i))
+    .toBeInTheDocument();
+  });
+
 
 
 
