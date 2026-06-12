@@ -9,11 +9,14 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
 import protectedRoutes from './routes/protectedRoutes.js';
-
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
 
 app.use(cors({
     origin: [
@@ -25,7 +28,7 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.connection || [], {
+mongoose.connect(process.env.connection1 || [], {
 }).then(() => {
     console.log("Connected to MongoDB");
 }).catch((error) => {
