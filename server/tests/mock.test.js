@@ -9,7 +9,7 @@ vi.mock("multer", () => {
   return {
     default: () => ({
       single: () => (req, res, next) => {
-        req.file = { filename: "mock-file" };
+        req.file = { path: "https://mock-file-url.com/file.pdf" };
         next();
       },
       fields: () => (req, res, next) => {
