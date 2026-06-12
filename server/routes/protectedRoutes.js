@@ -547,6 +547,17 @@ router.get("/company/jobs", authMiddleware, authorize("company"), async (req, re
     res.json(jobs);
 });
 
+
+/**
+ * @swagger
+ * /api/protected/jobs:
+ *   post:
+ *     summary: Create a job
+ *     responses:
+ *       200:
+ *         description: Job created
+ */
+
 router.get("/jobs", authMiddleware, authorize("student"), async (req, res) => {
 
     try {
