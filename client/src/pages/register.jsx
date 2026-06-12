@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import NavBar from '../components/navBar';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 function Register() {
     const [regFormData, setregFormData] = useState({
@@ -24,7 +24,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://api.mylearningportal.site/api/auth/register', regFormData);
+            await axios.post(`${API_URL}/api/auth/register`, regFormData);
 
         } catch (error) {
             console.log("An error occured during registeration:", error.response?.data || error.message);

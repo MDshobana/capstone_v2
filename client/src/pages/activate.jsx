@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 function Activate() {
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token");
         if(token) {
-            fetch("https://api.mylearningportal.site/api/auth/activate?token=" + token).then(response => {
+            fetch(`${API_URL}/api/auth/activate?token=${token}`).then(response => {
                 if(response.ok) {
                     alert("Account activated successfully! You can now log in.");
                 } else {

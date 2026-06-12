@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 function TrainerSubmissions({ courseId }) {
     const [submissions, setSubmissions] = useState([]);
     const [openAssignment, setOpenAssignment] = useState(null);
@@ -9,7 +11,7 @@ function TrainerSubmissions({ courseId }) {
 
     useEffect(() => {
         axios.get(
-            `https://api.mylearningportal.site/api/protected/submissions/${courseId}`,
+            `${API_URL}/api/protected/submissions/${courseId}`,
             { withCredentials: true }
         ).then(res => {
             setSubmissions(res.data);
@@ -19,7 +21,7 @@ function TrainerSubmissions({ courseId }) {
 
     const handleEvaluate = async (id, marks, feedback) => {
         await axios.put(
-            `https://api.mylearningportal.site/api/protected/evaluate/${id}`,
+            `${API_URL}/api/protected/evaluate/${id}`,
             { marks, feedback },
             { withCredentials: true }
         );
@@ -28,7 +30,7 @@ function TrainerSubmissions({ courseId }) {
 
         // ✅ refresh list
         const res = await axios.get(
-            `https://api.mylearningportal.site/api/protected/submissions/${courseId}`,
+            `${API_URL}/api/protected/submissions/${courseId}`,
             { withCredentials: true }
         );
 
@@ -76,16 +78,55 @@ function TrainerSubmissions({ courseId }) {
         setQuestions(updated);
     };
 
+
+    const handleDeleteQuiz = async () => {
+        if (!window.confirm("Delete this quiz?")) return;
+
+        await axios.delete(`${API_URL}/api/protected/quiz/${courseId}`, {
+            withCredentials: true
+        });
+
+        alert("Quiz deleted ✅");
+
+        // ✅ clear UI
+        setQuestions([]);
+    };
+
     const handleSaveQuiz = async () => {
 
-        if (questions.length === 0) {
+        if (!questions.length) {
             alert("Add at least one question");
             return;
         }
 
+        for (let i = 0; i < questions.length; i++) {
+            const q = questions[i];
+
+            if (!q.question.trim()) {
+                alert(`Question ${i + 1} is empty ❌`);
+                return;
+            }
+
+            if (!q.options || q.options.some(opt => !opt.trim())) {
+                alert(`All options must be filled for Q${i + 1} ❌`);
+                return;
+            }
+
+            if (!q.correctAnswer.trim()) {
+                alert(`Correct answer missing for Q${i + 1} ❌`);
+                return;
+            }
+
+            if (!q.options.includes(q.correctAnswer)) {
+                alert(`Correct answer must match one option in Q${i + 1} ❌`);
+                return;
+            }
+        }
+
+
         try {
             await axios.post(
-                "https://api.mylearningportal.site/api/protected/quiz",
+                `${API_URL}/api/protected/quiz`,
                 {
                     courseId,
                     questions
@@ -105,7 +146,7 @@ function TrainerSubmissions({ courseId }) {
     const fetchQuiz = async () => {
         try {
             const res = await axios.get(
-                `https://api.mylearningportal.site/api/protected/quiz/${courseId}`,
+                `${API_URL}/api/protected/quiz/${courseId}`,
                 { withCredentials: true }
             );
 
@@ -118,188 +159,190 @@ function TrainerSubmissions({ courseId }) {
 
 
     return (
-        <div className="mt-6">
+        <div className="space-y-6 mt-6">
 
-            {Object.keys(groupedSubmissions).map((assignment, index) => (
-
-                <div key={index} className="mb-4 border rounded">
-
-                    {/* ✅ HEADER (click to expand) */}
-                    <div
-                        onClick={() =>
-                            setOpenAssignment(
-                                openAssignment === assignment ? null : assignment
-                            )
-                        }
-                        className="cursor-pointer bg-gray-200 p-3 font-bold flex justify-between"
-                    >
-                        {assignment}
-
-                        <span>
-                            {openAssignment === assignment ? "▲" : "▼"}
-                        </span>
-                    </div>
-
-                    {/* ✅ EXPAND SECTION */}
-                    {openAssignment === assignment && (
-
-                        <div className="p-4 space-y-4 bg-white">
-
-                            {groupedSubmissions[assignment].map(sub => (
-
-                                <div
-                                    key={sub._id}
-                                    className="border p-3 rounded"
-                                >
-
-                                    <p className="font-semibold">
-                                        {sub.userId.email}
-                                    </p>
-
-                                    {/* ✅ FIX FILE URL */}
-                                    <a
-                                        href={sub.fileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-500 underline"
-                                    >
-                                        View PDF
-                                    </a>
-
-                                    <input
-                                        type="number"
-                                        placeholder="Marks"
-                                        defaultValue={sub.marks || ""}
-                                        onChange={(e) => sub.marks = e.target.value}
-                                        className="border p-2 mt-2 w-full"
-                                    />
-
-                                    <textarea
-                                        placeholder="Feedback"
-                                        defaultValue={sub.feedback || ""}
-                                        onChange={(e) => sub.feedback = e.target.value}
-                                        className="border p-2 mt-2 w-full"
-                                    />
-
-                                    <button
-                                        onClick={() =>
-                                            handleEvaluate(sub._id, sub.marks, sub.feedback)
-                                        }
-                                        className="bg-green-500 text-white px-4 py-2 mt-3 rounded"
-                                    >
-                                        Save Evaluation
-                                    </button>
-
-                                </div>
-
-                            ))}
-
-                        </div>
-
-                    )}
-
-                </div>
-
-            ))}
+            {/* ✅ ASSIGNMENTS GROUP */}
             <div>
-                <div className="mt-6 bg-gray-50 p-4 rounded border">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">
+                    📥 Student Submissions
+                </h2>
 
-                    <h3 className="text-lg font-bold mb-3">Add Test</h3>
-                    {savedQuiz && savedQuiz.questions && (
-                        <div className="mt-6 bg-white p-4 rounded border">
+                {Object.keys(groupedSubmissions).map((assignment, index) => (
+                    <div key={index} className="border rounded-xl shadow-sm bg-white overflow-hidden">
 
-                            <h3 className="text-lg font-bold mb-3">
-                                ✅ Saved Quiz
-                            </h3>
-
-                            {savedQuiz.questions.map((q, index) => (
-                                <div key={index} className="mb-3">
-
-                                    <p className="font-semibold">
-                                        Q{index + 1}: {q.question}
-                                    </p>
-
-                                    <ul className="ml-4 list-disc">
-                                        {q.options.map((opt, i) => (
-                                            <li key={i}>
-                                                {opt}
-                                                {opt === q.correctAnswer && (
-                                                    <span className="text-green-600"> ✅</span>
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                </div>
-                            ))}
-
-                        </div>
-                    )}
-                    <button
-                        onClick={handleAddQuestion}
-                        className="bg-blue-500 text-white px-3 py-1 rounded mb-4"
-                    >
-                        Add Question
-                    </button>
-
-                    {questions.map((q, qIndex) => (
-                        <div key={qIndex} className="border p-3 mb-3 rounded bg-white">
-
-                            {/* ✅ Question */}
-                            <input
-                                type="text"
-                                placeholder="Enter question"
-                                value={q.question}
-                                onChange={(e) =>
-                                    handleQuestionChange(qIndex, "question", e.target.value)
-                                }
-                                className="w-full border p-2 mb-2"
-                            />
-
-                            {/* ✅ Options */}
-                            {q.options.map((opt, optIndex) => (
-                                <input
-                                    key={optIndex}
-                                    type="text"
-                                    placeholder={`Option ${optIndex + 1}`}
-                                    value={opt}
-                                    onChange={(e) =>
-                                        handleOptionChange(qIndex, optIndex, e.target.value)
-                                    }
-                                    className="w-full border p-2 mb-1"
-                                />
-                            ))}
-
-                            {/* ✅ Correct Answer */}
-                            <input
-                                type="text"
-                                placeholder="Correct Answer"
-                                value={q.correctAnswer}
-                                onChange={(e) =>
-                                    handleQuestionChange(qIndex, "correctAnswer", e.target.value)
-                                }
-                                className="w-full border p-2 mt-2"
-                            />
-
-                        </div>
-                    ))}
-
-                    {questions.length > 0 && (
-                        <button
-                            onClick={handleSaveQuiz}
-                            className="bg-green-500 text-white px-4 py-2 rounded"
+                        {/* ✅ HEADER */}
+                        <div
+                            onClick={() =>
+                                setOpenAssignment(
+                                    openAssignment === assignment ? null : assignment
+                                )
+                            }
+                            className="cursor-pointer bg-gray-100 px-4 py-3 flex justify-between items-center hover:bg-gray-200 transition"
                         >
-                            Save Quiz ✅
-                        </button>
-                    )}
+                            <span className="font-semibold">{assignment}</span>
+                            <span>{openAssignment === assignment ? "▲" : "▼"}</span>
+                        </div>
 
-                </div>
+                        {/* ✅ CONTENT */}
+                        {openAssignment === assignment && (
+                            <div className="p-4 space-y-4">
+
+                                {groupedSubmissions[assignment].map(sub => (
+                                    <div key={sub._id} className="border rounded-lg p-4 bg-gray-50">
+
+                                        <p className="font-semibold text-gray-800">
+                                            {sub.userId.email}
+                                        </p>
+
+                                        <a
+                                            href={sub.fileUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-500 underline text-sm"
+                                        >
+                                            View Submission
+                                        </a>
+
+                                        <input
+                                            type="number"
+                                            placeholder="Marks"
+                                            defaultValue={sub.marks || ""}
+                                            onChange={(e) => sub.marks = e.target.value}
+                                            className="border p-2 mt-3 w-full rounded"
+                                        />
+
+                                        <textarea
+                                            placeholder="Feedback"
+                                            defaultValue={sub.feedback || ""}
+                                            onChange={(e) => sub.feedback = e.target.value}
+                                            className="border p-2 mt-2 w-full rounded"
+                                        />
+
+                                        <button
+                                            onClick={() =>
+                                                handleEvaluate(sub._id, sub.marks, sub.feedback)
+                                            }
+                                            className="bg-green-600 text-white px-4 py-2 mt-3 rounded-lg hover:bg-green-700 transition"
+                                        >
+                                            Save Evaluation ✅
+                                        </button>
+
+                                    </div>
+                                ))}
+
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            {/* ✅ QUIZ BUILDER */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+
+                <h2 className="text-xl font-bold mb-4 text-gray-800">
+                    🧠 Manage Quiz
+                </h2>
+
+                {/* ✅ Existing Quiz */}
+                {savedQuiz && savedQuiz.questions && (
+                    <div className="mb-6 bg-gray-50 p-4 rounded border">
+
+                        <h3 className="font-semibold mb-3">Saved Quiz</h3>
+
+                        {savedQuiz.questions.map((q, index) => (
+                            <div key={index} className="mb-3">
+
+                                <p className="font-medium">
+                                    Q{index + 1}: {q.question}
+                                </p>
+
+                                <ul className="ml-4 list-disc text-sm">
+                                    {q.options.map((opt, i) => (
+                                        <li key={i}>
+                                            {opt}
+                                            {opt === q.correctAnswer && (
+                                                <span className="text-green-600"> ✅</span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* ✅ Add Question Button */}
+                <button
+                    onClick={handleAddQuestion}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-700"
+                >
+                    Add Question
+                </button>
+
+                {/* ✅ Question Form */}
+                {questions.map((q, qIndex) => (
+                    <div key={qIndex} className="border p-4 mb-4 rounded-lg bg-gray-50">
+
+                        <input
+                            type="text"
+                            placeholder="Enter question"
+                            value={q.question}
+                            onChange={(e) =>
+                                handleQuestionChange(qIndex, "question", e.target.value)
+                            }
+                            className="w-full border p-2 rounded mb-2"
+                        />
+
+                        {q.options.map((opt, optIndex) => (
+                            <input
+                                key={optIndex}
+                                type="text"
+                                placeholder={`Option ${optIndex + 1}`}
+                                value={opt}
+                                onChange={(e) =>
+                                    handleOptionChange(qIndex, optIndex, e.target.value)
+                                }
+                                className="w-full border p-2 rounded mb-1"
+                            />
+                        ))}
+
+                        <input
+                            type="text"
+                            placeholder="Correct Answer"
+                            value={q.correctAnswer}
+                            onChange={(e) =>
+                                handleQuestionChange(qIndex, "correctAnswer", e.target.value)
+                            }
+                            className="w-full border p-2 rounded mt-2"
+                        />
+
+                    </div>
+                ))}
+
+                {/* ✅ Save Quiz */}
+                {questions.length > 0 && (
+                    <button
+                        disabled={!questions.length}
+                        onClick={handleSaveQuiz}
+                        className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700"
+                    >
+                        Save Quiz ✅
+                    </button>
+                )}
+
+                <button
+                    onClick={handleDeleteQuiz}
+                    className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
+                >
+                    Delete Quiz
+                </button>
+
 
             </div>
 
         </div>
-
     );
+
 }
 
 export default TrainerSubmissions;

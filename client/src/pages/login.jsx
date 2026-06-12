@@ -8,8 +8,11 @@ import Register from '../pages/register';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 function Login() {
     const { setUser } = useContext(AuthContext);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -22,7 +25,11 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('https://api.mylearningportal.site/api/auth/login', formData, {withCredentials: true} ).then(response => {
+        if (!formData.email) {
+            setError("Email required");
+        }
+
+        axios.post(`${API_URL}/api/auth/login`, formData, { withCredentials: true }).then(response => {
             if (response.status === 200) {
                 console.log('Login successful :', response.data)
                 setUser(response.data.user);
@@ -42,6 +49,7 @@ function Login() {
                 console.log('Login failed')
             }
         }).catch(error => {
+
             console.error('An error occurred during login:', error.response?.data || error.message);
         });
     };
@@ -60,7 +68,7 @@ function Login() {
                         <div>
                             <label className="block text-sm/6 font-medium text-black-100" htmlFor="Email">Email: </label>
                             <div className="mt-2">
-                                <input className="block w-full rounded-md bg-black/5 px-3 py-1.5 text-base text-black outline-1 outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                                <input className="block w-full rounded-md bg-black/5 px-3 py-1.5 text-base text-black outline-1 outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required/>
                             </div>
                         </div>
                         <div>
@@ -78,6 +86,13 @@ function Login() {
                             </div>
                         </div>
                         <div>
+
+                            {error && (
+                                <p style={{ color: "red", textAlign: "center" }}>
+                                    {error}
+                                </p>
+                            )}
+
                             <button className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" type="submit">Login</button>
                         </div>
                     </form>
@@ -87,7 +102,7 @@ function Login() {
                         onSuccess={async (credentialResponse) => {
                             // console.log(credentialResponse);
                             try {
-                                await axios.post('https://api.mylearningportal.site/api/auth/google-login', { token: credentialResponse.credential })
+                                await axios.post(`${API_URL}/api/auth/google-login`, { token: credentialResponse.credential })
                             } catch (error) {
                                 console.log('Google Login Failed:', error.response?.data || error.message);
                             }

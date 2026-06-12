@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 function AIAssistant() {
     const [input, setInput] = useState("");
     const [response, setResponse] = useState("");
@@ -9,7 +11,7 @@ function AIAssistant() {
     const handleAsk = async () => {
         try {
             const res = await axios.post(
-                "https://api.mylearningportal.site/api/protected/chat",
+                `${API_URL}/api/protected/chat`,
                 { message: input },
                 { withCredentials: true }
             );

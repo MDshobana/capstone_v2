@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRef } from "react";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 function StudentAssignment({ courseId, assignments = [] }) {
   const [file, setFile] = useState(null);
   const [submissions, setSubmissions] = useState([]);
@@ -27,7 +29,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
     try {
       await axios.post(
-        "https://api.mylearningportal.site/api/protected/submit-assignment",
+        `${API_URL}/api/protected/submit-assignment`,
         formData,
         { withCredentials: true }
       );
@@ -59,7 +61,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
   const fetchQuiz = async () => {
     try {
       const res = await axios.get(
-        `https://api.mylearningportal.site/api/protected/quiz/${courseId}`,
+        `${API_URL}/api/protected/quiz/${courseId}`,
         { withCredentials: true }
       );
 
@@ -73,7 +75,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
   // ✅ Fetch submissions
   const fetchSubmission = async () => {
     const res = await axios.get(
-      "https://api.mylearningportal.site/api/protected/my-submissions",
+      `${API_URL}/api/protected/my-submissions`,
       { withCredentials: true }
     );
 
@@ -99,7 +101,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
     try {
       const res = await axios.post(
-        "https://api.mylearningportal.site/api/protected/submit-quiz",
+        `${API_URL}/api/protected/submit-quiz`,
         {
           courseId,
           answers
@@ -120,72 +122,73 @@ function StudentAssignment({ courseId, assignments = [] }) {
     }
   };
 
-
   return (
-    <div className="bg-white p-6 rounded shadow mt-6">
+    <div className="bg-white p-6 rounded-xl shadow-md mt-6 space-y-6">
 
-      <h2 className="text-xl font-bold mb-4">Submit Assignments</h2>
+      {/* ✅ ASSIGNMENTS */}
+      <div>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
+          📄 Assignments
+        </h2>
 
-      {/* ✅ Loop over assignments */}
-      {assignments.map((assignment, index) => {
+        {assignments.map((assignment, index) => {
+          const isSubmitted = submissions.some(
+            sub => String(sub.assignmentName) === String(assignment)
+          );
 
-        const isSubmitted = submissions.some(
-          sub => String(sub.assignmentName) === String(assignment)
-        );
-
-        return (
-          <div key={index} className="border p-3 mt-3 rounded">
-
-            <p className="font-semibold">{assignment}</p>
-
-            <input
-              ref={fileRef}
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => setFile(e.target.files[0])}
-              disabled={isSubmitted}
-            />
-
-            <button
-              onClick={() => handleSubmit(assignment)}
-              disabled={isSubmitted}
-              className={`px-4 py-2 mt-2 rounded ${isSubmitted
-                ? "bg-gray-400"
-                : "bg-blue-500 text-white"
-                }`}
+          return (
+            <div
+              key={index}
+              className="bg-gray-50 border rounded-lg p-4 mb-3 hover:shadow-sm transition"
             >
-              {isSubmitted ? "Submitted ✅" : "Submit"}
-            </button>
+              <p className="font-semibold">{assignment}</p>
 
-            {/* ✅ Show result */}
-            {isSubmitted && (
-              <div className="mt-2 text-sm">
-                Marks: {
-                  submissions.find(
-                    sub => sub.assignmentName === assignment
-                  )?.marks || "Pending"
-                }
-              </div>
-            )}
+              <input
+                ref={fileRef}
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => setFile(e.target.files[0])}
+                disabled={isSubmitted}
+                className="mt-2 text-sm"
+              />
 
-          </div>
-        );
-      })}
-      <h2 className="text-xl font-bold mt-6 mb-4">
-        Take Test
-      </h2>
+              <button
+                onClick={() => handleSubmit(assignment)}
+                disabled={isSubmitted}
+                className={`mt-3 px-4 py-2 rounded-lg text-white transition
+                  ${isSubmitted
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+              >
+                {isSubmitted ? "Submitted ✅" : "Submit"}
+              </button>
 
-      {/* ✅ If quiz exists */}
-      {quiz && quiz.questions ? (
-        <div>
+              {/* ✅ Marks */}
+              {isSubmitted && (
+                <p className="mt-2 text-sm text-gray-600">
+                  Marks: {
+                    submissions.find(sub => sub.assignmentName === assignment)?.marks || "Pending"
+                  }
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
-          {quiz.questions.map((q, qIndex) => (
-            <div key={qIndex} className="border p-3 mb-3 rounded">
+      {/* ✅ QUIZ */}
+      <div>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
+          🧠 Quiz
+        </h2>
 
-              {/* ✅ Question */}
-              <p className="font-semibold">{q.question}</p>
+        {quiz && quiz.questions ? (
+          quiz.questions.map((q, qIndex) => (
+            <div key={qIndex} className="border rounded-lg p-4 mb-4 bg-gray-50">
 
-              {/* ✅ Options */}
+              <p className="font-semibold mb-2">{q.question}</p>
+
               {q.options.map((opt, optIndex) => (
                 <button
                   key={optIndex}
@@ -194,44 +197,54 @@ function StudentAssignment({ courseId, assignments = [] }) {
                     updated[qIndex] = opt;
                     setAnswers(updated);
                   }}
-                  className={`block mt-2 px-3 py-1 border rounded ${answers[qIndex] === opt
-                    ? "bg-blue-500 text-white"
-                    : ""
+                  className={`block w-full text-left mt-2 px-3 py-2 border rounded transition
+                    ${answers[qIndex] === opt
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-200"
                     }`}
                 >
                   {opt}
                 </button>
               ))}
-
             </div>
-          ))}
+          ))
+        ) : (
+          <p className="text-gray-500">No quiz available</p>
+        )}
 
-          {/* ✅ Submit Quiz */}
+        {quiz && (
           <button
-            onClick={() => handleSubmitQuiz(courseId, answers)}
-            className="bg-purple-500 text-white px-4 py-2 rounded mt-3"
+            onClick={handleSubmitQuiz}
+            className="bg-purple-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-purple-700"
           >
             Submit Quiz
           </button>
+        )}
+      </div>
 
-        </div>
-      ) : (
-        <p>No quiz available for this course</p>
-      )}
+      {/* ✅ CERTIFICATE */}
       {downloadCertificate && (
+        <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+          <p className="font-semibold text-green-700">
+            🎉 Congratulations! You passed the quiz
+          </p>
 
-        <a
-          href={`https://api.mylearningportal.site/api/protected/certificate/${courseId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block mt-4 text-blue-600 underline"
-        >
-          🎓 Download Certificate
-        </a>
-
+          <a
+            href={`${API_URL}/api/protected/certificate/${courseId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline mt-2 block"
+          >
+            Download Certificate 🎓
+          </a>
+        </div>
       )}
     </div>
   );
+
+
+
+
 }
 
 export default StudentAssignment;
