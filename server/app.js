@@ -28,7 +28,7 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.connection1 || [], {
+mongoose.connect(process.env.connection || [], {
 }).then(() => {
     console.log("Connected to MongoDB");
 }).catch((error) => {
