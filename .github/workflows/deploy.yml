@@ -24,39 +24,37 @@ jobs:
         with:
           node-version: 20
 
-      # Install
+      # ✅ Install frontend
       - name: Install Frontend
         working-directory: ./client
         run: npm install
 
-      # Tests
-      # - name: Run Frontend Tests
-      #   working-directory: ./client
-      #   run: npm test --if-present
-      
+      # ✅ Install backend
       - name: Install Backend
         working-directory: ./server
         run: npm install
-      
-      - name: Run Tests
+
+      # ✅ Run backend tests (critical)
+      - name: Run Backend Tests
         working-directory: ./server
         run: npm run test
 
-      # Build frontend
+      # ✅ Build frontend
       - name: Build Frontend
         working-directory: ./client
         run: npm run build
         env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }} 
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
-      # Deploy frontend
+      # ✅ Install Vercel CLI
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
+      # ✅ Deploy frontend
       - name: Deploy Frontend to Vercel
         working-directory: ./client
         run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
 
-      # Deploy backend
+      # ✅ Deploy backend
       - name: Deploy Backend to Render
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
