@@ -4,13 +4,14 @@ import React from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function NavBar() {
     const { user, setUser } = useContext(AuthContext);
     const useNavigated = useNavigate();
 
     useEffect(() => {
-        axios.get("https://api.mylearningportal.site/api/auth/checklogin", { withCredentials: true }).then((response) => {
+        axios.get(`${API_URL}/api/auth/checklogin`, { withCredentials: true }).then((response) => {
             setUser(response.data.user);
         }).catch((error) => {
             setUser(null);
@@ -19,7 +20,7 @@ export default function NavBar() {
     }, []);
 
     const handleLogOut = () => {
-        axios.post("https://api.mylearningportal.site/api/auth/logout", {}, { withCredentials: true }).then((response) => {
+        axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true }).then((response) => {
             console.log(response.data);
             setUser(null);
             useNavigated("/login");
@@ -34,33 +35,70 @@ export default function NavBar() {
             <h1 className="text-2xl font-bold text-yellow-400">
                 MyLearning
             </h1>
-            {!user ?(
-            <ul className="flex gap-8 items-center text-gray-200">
-
-                <li className="hover:text-blue-400 cursor-pointer">Courses</li>
-                <li className="hover:text-blue-400 cursor-pointer">Contact</li>
-
-                <li>
-                    <Link to="/login" className="hover:text-blue-400">
-                        Login
-                    </Link>
-                </li>
-
-                <li>
-                    <Link
-                        to="/"
-                        className="bg-blue-500 px-4 py-1 rounded hover:bg-blue-600"
-                    >
-                        Sign Up
-                    </Link>
-                </li>
-
-            </ul> ): (
+            {!user ? (
                 <ul className="flex gap-8 items-center text-gray-200">
-                    <li className="hover:text-blue-400 cursor-pointer">Dashboard</li>
+
                     <li className="hover:text-blue-400 cursor-pointer">Courses</li>
                     <li className="hover:text-blue-400 cursor-pointer">Contact</li>
-                    
+
+                    <li>
+                        <Link to="/login" className="hover:text-blue-400">
+                            Login
+                        </Link>
+                    </li>
+
+                    <li>
+                        <Link
+                            to="/"
+                            className="bg-blue-500 px-4 py-1 rounded hover:bg-blue-600"
+                        >
+                            Sign Up
+                        </Link>
+                    </li>
+
+                </ul>) : (
+                <ul className="flex gap-8 items-center text-gray-200">
+                    <li>
+
+                        <a
+                            href="#dashboard"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            className="hover:text-blue-400 cursor-pointer"
+                        >
+                            Dashboard
+                        </a>
+
+                    </li>
+                    <li>
+                        <a
+                            href="#courses"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            className="hover:text-blue-400 cursor-pointer"
+                        >
+                            Courses
+                        </a>
+                    </li>
+                    <li>
+
+                        <a
+                            href="#contact"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            className="hover:text-blue-400 cursor-pointer"
+                        >
+                            Contact
+                        </a>
+
+                    </li>
+
                     <li>
                         <button
                             onClick={handleLogOut}
@@ -70,7 +108,7 @@ export default function NavBar() {
                         </button>
                     </li>
 
-                </ul>	
+                </ul>
             )}
         </nav>
     );
