@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import SideBar from "../components/sideBar";
-import TrainerContent from "./TrainerContent";
+import TrainerContent from "./trainerContent";
 import AdminAnalytics from "../components/adminAnalytics";
 import { ActivityLog, RevenueReport } from "../components/adminAnalytics";
 
