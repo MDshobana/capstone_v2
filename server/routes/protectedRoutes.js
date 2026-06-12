@@ -137,17 +137,24 @@ router.post('/courses/upload', authMiddleware, authorize('admin', 'trainer'), up
         try {
             const { title, description, category, level } = req.body;
 
-            const thumbnail = req.files['thumbnail'][0];
 
-            const croppedThumbnail = cloudinary.url(thumbnail.filename, {
+            const thumbnailFile = req.files['thumbnail'][0];
+            const videoFile = req.files['video'][0];
+
+            
+            const thumbnailUrl = thumbnailFile.path.replace("http://", "https://");
+
+            const videoUrl = videoFile.path.replace("http://", "https://");
+
+
+            const croppedThumbnail = cloudinary.url(thumbnailUrl.filename, {
                 width: 400,
                 height: 250,
                 crop: "fill",
-                gravity: "auto"
+                gravity: "auto",
+                secure: true
             });
 
-            const thumbnailUrl = req.files['thumbnail'][0].path;
-            const videoUrl = req.files['video'][0].path;
             const course = new Course({
                 title,
                 description,
@@ -278,7 +285,7 @@ router.post(
                 userId: req.user.id,
                 courseId,
                 assignmentName,
-                fileUrl: req.file.path
+                fileUrl: req.file.path.replace("http://", "https://")
 
             });
 
@@ -591,7 +598,7 @@ router.post("/jobs", authMiddleware, authorize("company"), async (req, res) => {
 
 router.post("/apply", authMiddleware, authorize("student"), uploadResume.single("resume"), async (req, res) => {
     const { jobId } = req.body;
-    const resumeUrl = req.file.path;
+    const resumeUrl = req.file.path.replace("http://", "https://");
     const email = req.user.email;
     console.log(email);
     await Application.create({
