@@ -160,7 +160,7 @@ router.post('/courses/upload', authMiddleware, authorize('admin', 'trainer'), up
             }
 
 
-            const croppedThumbnail = cloudinary.url(thumbnailUrl.filename, {
+            const croppedThumbnail = cloudinary.url(thumbnailFile.filename, {
                 width: 400,
                 height: 250,
                 crop: "fill",
