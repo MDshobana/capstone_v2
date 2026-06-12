@@ -68,7 +68,7 @@ function Login() {
                         <div>
                             <label className="block text-sm/6 font-medium text-black-100" htmlFor="Email">Email: </label>
                             <div className="mt-2">
-                                <input className="block w-full rounded-md bg-black/5 px-3 py-1.5 text-base text-black outline-1 outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required/>
+                                <input className="block w-full rounded-md bg-black/5 px-3 py-1.5 text-base text-black outline-1 outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" type="email" id="email" name="email" value={formData.email} onChange={handleChange} />
                             </div>
                         </div>
                         <div>
