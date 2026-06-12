@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import SideBar from "../components/sideBar";
-import TrainerContent from "./TrainerContent";
+import TrainerContent from "./trainerContent";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
