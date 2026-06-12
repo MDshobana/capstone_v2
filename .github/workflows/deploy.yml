@@ -37,7 +37,7 @@ jobs:
       # ✅ Run backend tests (critical)
       - name: Run Backend Tests
         working-directory: ./server
-        run: npm run test
+        run: npx vitest run
 
       # ✅ Build frontend
       - name: Build Frontend
