@@ -21,11 +21,11 @@ Vitest + Supertest
 
 
 ## Testing
-# Fully tested backend
-# Uses Vitest + Supertest
-# In-memory DB with MongoMemoryServer
-# External services mocked
-## Run tests
+Fully tested backend
+Uses Vitest + Supertest
+In-memory DB with MongoMemoryServer
+External services mocked
+Run tests
 Shellnpm run testWeitere Zeilen anzeigen
 
 ## Test Report
@@ -50,18 +50,18 @@ Shellnpm run coverage``Weitere Zeilen anzeigen
 
 ## Open in browser to see:
 
-# Lines coverage
-# Functions coverage
-# Branch coverage
+Lines coverage
+Functions coverage
+Branch coverage
 
 
 ## Mocked Services
 To ensure isolated testing:
 
-# OpenAI 
-# Razorpay 
-# Cloudinary 
-# Multer (file uploads) 
+OpenAI 
+Razorpay 
+Cloudinary 
+Multer (file uploads) 
 
 
 ## Authentication
@@ -78,9 +78,9 @@ https://mylearningportal.site/api-docs
 Shellnpm installnpm start``Weitere Zeilen anzeigen
 
 ## Test Status
-# All tests passing
-# Full API coverage
-# External APIs mocked
+All tests passing
+Full API coverage
+External APIs mocked
 
 ## Features
 
