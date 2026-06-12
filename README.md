@@ -1,5 +1,5 @@
-🚀 SkillSphere Backend
-📌 Overview
+## SkillSphere Backend
+## Overview
 SkillSphere backend provides APIs for:
 
 Jobs & Applications
@@ -10,7 +10,7 @@ Payments (Razorpay)
 
 Built with Node.js, Express, MongoDB and fully tested.
 
-🛠 Tech Stack
+## Tech Stack
 
 Node.js
 Express.js
@@ -20,69 +20,69 @@ Multer + Cloudinary
 Vitest + Supertest
 
 
-🧪 Testing
-✅ Fully tested backend
-✅ Uses Vitest + Supertest
-✅ In-memory DB with MongoMemoryServer
-✅ External services mocked
-Run tests
+## Testing
+# Fully tested backend
+# Uses Vitest + Supertest
+# In-memory DB with MongoMemoryServer
+# External services mocked
+## Run tests
 Shellnpm run testWeitere Zeilen anzeigen
 
-📊 Test Report
+## Test Report
 After running tests, a report is generated:
 test-results.xml
 
-📁 Location:
+## Location:
 /server/test-results.xml
 
-👉 Used for:
+## Used for:
 
-CI/CD pipelines
+## CI/CD pipelines
 automation tools
 
 
-📈 Coverage Report
+## Coverage Report
 Run coverage
 Shellnpm run coverage``Weitere Zeilen anzeigen
 
-Output
+## Output
 /coverage/index.html
 
-👉 Open in browser to see:
+## Open in browser to see:
 
-✅ Lines coverage
-✅ Functions coverage
-✅ Branch coverage
+# Lines coverage
+# Functions coverage
+# Branch coverage
 
 
-🎭 Mocked Services
+## Mocked Services
 To ensure isolated testing:
 
-OpenAI ✅
-Razorpay ✅
-Cloudinary ✅
-Multer (file uploads) ✅
+# OpenAI 
+# Razorpay 
+# Cloudinary 
+# Multer (file uploads) 
 
 
-🔐 Authentication
+## Authentication
 Test mode bypass:
 JavaScriptreq.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};Weitere Zeilen anzeigen
 
-🌐 API Documentation
+## API Documentation
 Swagger UI is available at:
 https://mylearningportal.site/api-docs
 
-👉 Provides interactive API testing interface
+## Provides interactive API testing interface
 
-🚀 Run Locally
+## Run Locally
 Shellnpm installnpm start``Weitere Zeilen anzeigen
 
-✅ Test Status
-✔ All tests passing
-✔ Full API coverage
-✔ External APIs mocked
+## Test Status
+# All tests passing
+# Full API coverage
+# External APIs mocked
 
-🎯 Features
+## Features
 
 REST API architecture
 Role-based access
@@ -91,11 +91,11 @@ External API integrations
 Fully testable backend
 
 
-🔮 Future Improvements
+## Future Improvements
 
 CI/CD pipeline
 Coverage badge
 Swagger auto-generation
 
 
-✅ Ready for production-level development
+Ready for production-level development
