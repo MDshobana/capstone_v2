@@ -19,11 +19,9 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies (Root)
-        run: npm install
 
       - name: Install Frontend
-        working-directory: ./frontend
+        working-directory: ./client
         run: npm install
 
       - name: Install Backend
