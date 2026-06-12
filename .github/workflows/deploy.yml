@@ -29,6 +29,7 @@ jobs:
         run: npm install
 
       - name: Run Tests
+        working-directory: ./client
         run: npm test --if-present
 
       - name: Build Frontend
