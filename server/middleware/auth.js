@@ -12,8 +12,8 @@ const authMiddleware = (req, res, next) => {
 
     if (process.env.NODE_ENV === "test") {
         req.user = {
-            id: "test-user-id",
-            role: "company" // or "student"
+            id: "507f1f77bcf86cd799439011",
+            role: "student" // or "student"
         };
         return next();
     }
