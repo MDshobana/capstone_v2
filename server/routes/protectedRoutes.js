@@ -281,16 +281,16 @@ router.post(
     async (req, res) => {
         try {
 
-            const isTest = process.env.NODE_ENV === "test";
+            // const isTest = process.env.NODE_ENV === "test";
 
-            const courseId = req.body?.courseId || (isTest ? "507f1f77bcf86cd799439011" : undefined);
-            const assignmentName = req.body?.assignmentName || (isTest ? "test-assignment" : undefined);
+            // const courseId = req.body?.courseId || (isTest ? "507f1f77bcf86cd799439011" : undefined);
+            // const assignmentName = req.body?.assignmentName || (isTest ? "test-assignment" : undefined);
 
 
 
-            console.log("FILE:", req.file);
-            console.log("FILES:", req.files);
-
+            // console.log("FILE:", req.file);
+            // console.log("FILES:", req.files);
+            const { courseId, assignmentName } = req.body || {};
 
             if (!req.file) {
                 return res.status(400).json({ message: "File missing" });
