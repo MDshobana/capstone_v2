@@ -38,7 +38,7 @@ function TrainerSubmissions({ courseId }) {
     };
 
 
-    const groupedSubmissions = submissions.reduce((acc, sub) => {
+    const groupedSubmissions = (submissions || []).reduce((acc, sub) => {
 
 
         const key = sub.assignmentName || "Unknown Assignment";
@@ -167,73 +167,77 @@ function TrainerSubmissions({ courseId }) {
                     📥 Student Submissions
                 </h2>
 
-                {Object.keys(groupedSubmissions).map((assignment, index) => (
-                    <div key={index} className="border rounded-xl shadow-sm bg-white overflow-hidden">
+                {Object.keys(groupedSubmissions).length === 0 ? (
+                    <p className="text-gray-500">No submissions available</p>
+                ) : (
 
-                        {/* ✅ HEADER */}
-                        <div
-                            onClick={() =>
-                                setOpenAssignment(
-                                    openAssignment === assignment ? null : assignment
-                                )
-                            }
-                            className="cursor-pointer bg-gray-100 px-4 py-3 flex justify-between items-center hover:bg-gray-200 transition"
-                        >
-                            <span className="font-semibold">{assignment}</span>
-                            <span>{openAssignment === assignment ? "▲" : "▼"}</span>
-                        </div>
+                    Object.keys(groupedSubmissions).map((assignment, index) => (
+                        <div key={index} className="border rounded-xl shadow-sm bg-white overflow-hidden">
 
-                        {/* ✅ CONTENT */}
-                        {openAssignment === assignment && (
-                            <div className="p-4 space-y-4">
-
-                                {groupedSubmissions[assignment].map(sub => (
-                                    <div key={sub._id} className="border rounded-lg p-4 bg-gray-50">
-
-                                        <p className="font-semibold text-gray-800">
-                                            {sub.userId.email}
-                                        </p>
-
-                                        <a
-                                            href={sub.fileUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline text-sm"
-                                        >
-                                            View Submission
-                                        </a>
-
-                                        <input
-                                            type="number"
-                                            placeholder="Marks"
-                                            defaultValue={sub.marks || ""}
-                                            onChange={(e) => sub.marks = e.target.value}
-                                            className="border p-2 mt-3 w-full rounded"
-                                        />
-
-                                        <textarea
-                                            placeholder="Feedback"
-                                            defaultValue={sub.feedback || ""}
-                                            onChange={(e) => sub.feedback = e.target.value}
-                                            className="border p-2 mt-2 w-full rounded"
-                                        />
-
-                                        <button
-                                            onClick={() =>
-                                                handleEvaluate(sub._id, sub.marks, sub.feedback)
-                                            }
-                                            className="bg-green-600 text-white px-4 py-2 mt-3 rounded-lg hover:bg-green-700 transition"
-                                        >
-                                            Save Evaluation ✅
-                                        </button>
-
-                                    </div>
-                                ))}
-
+                            {/* ✅ HEADER */}
+                            <div
+                                onClick={() =>
+                                    setOpenAssignment(
+                                        openAssignment === assignment ? null : assignment
+                                    )
+                                }
+                                className="cursor-pointer bg-gray-100 px-4 py-3 flex justify-between items-center hover:bg-gray-200 transition"
+                            >
+                                <span className="font-semibold">{assignment}</span>
+                                <span>{openAssignment === assignment ? "▲" : "▼"}</span>
                             </div>
-                        )}
-                    </div>
-                ))}
+
+                            {/* ✅ CONTENT */}
+                            {openAssignment === assignment && (
+                                <div className="p-4 space-y-4">
+
+                                    {(groupedSubmissions[assignment] || []).map(sub => (
+                                        <div key={sub._id} className="border rounded-lg p-4 bg-gray-50">
+
+                                            <p className="font-semibold text-gray-800">
+                                                {sub?.userId?.email || "No email"}
+                                            </p>
+
+                                            <a
+                                                href={sub.fileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 underline text-sm"
+                                            >
+                                                View Submission
+                                            </a>
+
+                                            <input
+                                                type="number"
+                                                placeholder="Marks"
+                                                defaultValue={sub.marks || ""}
+                                                onChange={(e) => sub.marks = e.target.value}
+                                                className="border p-2 mt-3 w-full rounded"
+                                            />
+
+                                            <textarea
+                                                placeholder="Feedback"
+                                                defaultValue={sub.feedback || ""}
+                                                onChange={(e) => sub.feedback = e.target.value}
+                                                className="border p-2 mt-2 w-full rounded"
+                                            />
+
+                                            <button
+                                                onClick={() =>
+                                                    handleEvaluate(sub._id, sub.marks, sub.feedback)
+                                                }
+                                                className="bg-green-600 text-white px-4 py-2 mt-3 rounded-lg hover:bg-green-700 transition"
+                                            >
+                                                Save Evaluation ✅
+                                            </button>
+
+                                        </div>
+                                    ))}
+
+                                </div>
+                            )}
+                        </div>
+                    )))}
             </div>
 
             {/* ✅ QUIZ BUILDER */}
