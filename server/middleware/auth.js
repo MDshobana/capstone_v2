@@ -10,13 +10,13 @@ const authMiddleware = (req, res, next) => {
     // const token = authHeader.split(' ')[1];
 
 
-    if (process.env.NODE_ENV === "test") {
-        req.user = {
-            id: "507f1f77bcf86cd799439011",
-            role: "student" // or "student"
-        };
-        return next();
-    }
+    // if (process.env.NODE_ENV === "test") {
+    //     req.user = {
+    //         id: "507f1f77bcf86cd799439011",
+    //         role: "student" // or "student"
+    //     };
+    //     return next();
+    // }
 
     const token = req.cookies.token;
     if (!token) {
