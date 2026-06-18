@@ -35,6 +35,7 @@ function TrainerSubmissions({ courseId }) {
         );
 
         setSubmissions(res.data);
+        console.log(setSubmissions);
     };
 
 
@@ -204,8 +205,10 @@ function TrainerSubmissions({ courseId }) {
                                                 rel="noopener noreferrer"
                                                 className="text-blue-500 underline text-sm"
                                             >
+                                                
                                                 View Submission
                                             </a>
+                                            {console.log("FILE URL:", sub.fileUrl)}
 
                                             <input
                                                 type="number"

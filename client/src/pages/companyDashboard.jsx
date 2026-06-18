@@ -348,7 +348,7 @@ export function CompanyDashboard() {
                                     <p className="font-medium">{app.email}</p>
 
                                     <a
-                                        href={`${API_URL}/${app.resumeUrl}`}
+                                        href={app.resumeUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-500 underline text-sm"

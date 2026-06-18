@@ -166,11 +166,18 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
               {/* ✅ Marks */}
               {isSubmitted && (
-                <p className="mt-2 text-sm text-gray-600">
-                  Marks: {
-                    submissions.find(sub => sub.assignmentName === assignment)?.marks || "Pending"
-                  }
-                </p>
+                <div>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Marks: {
+                      submissions.find(sub => sub.assignmentName === assignment)?.marks || "Pending"
+                    }
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Feedback: {
+                      submissions.find(sub => sub.assignmentName === assignment)?.feedback || ""
+                    }
+                  </p>
+                </div>
               )}
             </div>
           );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,7 +14,7 @@ function Register() {
         role: 'student'
 
     })
-
+    const navigate = useNavigate();
 
 
     const handleChange = (e) => {
@@ -25,15 +25,91 @@ function Register() {
         e.preventDefault();
         try {
             await axios.post(`${API_URL}/api/auth/register`, regFormData);
-
+            navigate("/login");
         } catch (error) {
             console.log("An error occured during registeration:", error.response?.data || error.message);
         };
     }
     return (
-        <>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="min-h-screen grid md:grid-cols-2">
+
+
+            <div className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-blue-600 to-purple-600 text-white p-10">
+
+                <h1 className="text-4xl font-bold mb-4">
+                    MyLearning Portal 🚀
+                </h1>
+
+                <p className="text-lg text-center max-w-md">
+                    Learn new skills, complete assignments, and land your dream job.
+                </p>
+
+            </div>
+
+
+            <div className="flex items-center justify-center bg-gray-50">
+
+                <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+
+                    <h2 className="text-2xl font-bold mb-6 text-center">
+                        Create Account
+                    </h2>
+
+                    <p className="text-center text-sm mb-4">
+                        Already have an account?{" "}
+                        <span
+                            onClick={() => navigate("/login")}
+                            className="text-blue-600 cursor-pointer"
+                        >
+                            Login
+                        </span>
+                    </p>
+
+
+                    <form className="space-y-4">
+
+                        <input
+                            type="text"
+                            placeholder="First Name"
+                            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Last Name"
+                            className="w-full border p-3 rounded-lg"
+                        />
+
+                        <input
+                            type="number"
+                            placeholder="Age"
+                            className="w-full border p-3 rounded-lg"
+                        />
+
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="w-full border p-3 rounded-lg"
+                        />
+
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            className="w-full border p-3 rounded-lg"
+                        />
+
+                        <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                            Register
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>);
+    {/* <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h1 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-black">Welcome to the MyLearning Portal</h1>
                 <p className="mt-10 text-center text-sm/6 text-gray-600">Already have an account?
                     <Link className="font-semibold text-indigo-400 hover:text-indigo-300" to='/login'> Login </Link>
@@ -75,9 +151,9 @@ function Register() {
                         </div>
                     </form>
                 </div>
-            </div>
-        </>
-    )
+            </div> */}
+
+
 }
 
 export default Register
