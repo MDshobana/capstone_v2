@@ -26,7 +26,7 @@ Uses Vitest + Supertest
 In-memory DB with MongoMemoryServer
 External services mocked
 Run tests
-Shellnpm run testWeitere Zeilen anzeigen
+npm run test
 
 ## Test Report
 After running tests, a report is generated:
@@ -35,15 +35,9 @@ test-results.xml
 ## Location:
 /server/test-results.xml
 
-## Used for:
-
-## CI/CD pipelines
-automation tools
-
-
 ## Coverage Report
 Run coverage
-Shellnpm run coverage``Weitere Zeilen anzeigen
+npm run coverage
 
 ## Output
 /coverage/index.html
@@ -66,16 +60,15 @@ Multer (file uploads)
 
 ## Authentication
 Test mode bypass:
-JavaScriptreq.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};Weitere Zeilen anzeigen
+JavaScriptreq.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};
 
 ## API Documentation
 Swagger UI is available at:
-https://mylearningportal.site/api-docs
-
-## Provides interactive API testing interface
+https://api.mylearningportal.site/api-docs
 
 ## Run Locally
-Shellnpm installnpm start``Weitere Zeilen anzeigen
+npm install
+npm start
 
 ## Test Status
 All tests passing
