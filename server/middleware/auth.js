@@ -18,7 +18,15 @@ const authMiddleware = (req, res, next) => {
     //     return next();
     // }
 
-    const token = req.cookies.token;
+    let token;
+
+    if (req.cookies.token) {
+        token = req.cookies.token;
+
+    } else if (req.headers.authorization) {
+        token = req.headres.authorization.split(" ")[1];
+    }
+
     if (!token) {
         return res.status(401).json({ message: "Token is missing" });
     }
