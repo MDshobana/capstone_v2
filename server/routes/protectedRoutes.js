@@ -87,9 +87,19 @@ const storage = new CloudinaryStorage({
         if (file.fieldname === "resume") {
             return {
                 folder: "resumes",
-                resource_type: "raw"
+                resource_type: "raw",
+                public_id: file.originalname
             }
         }
+
+        if (file.fieldname === "file") {
+            return {
+                folder: "assignments",
+                resource_type: "raw",
+                public_id: file.originalname
+            };
+        }
+
     }
 });
 
@@ -117,6 +127,18 @@ router.get('/dashboard', authMiddleware, authorize('admin', 'student', 'trainer'
 });
 
 
+/**
+ * @swagger
+ * /api/protected/admin/manage-users:
+ *   get:
+ *     summary: Get all the users
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+
 router.get('/admin/manage-users', authMiddleware, authorize('admin'), async (req, res) => {
     try {
         let users = await User.find().select('-password');
@@ -127,6 +149,43 @@ router.get('/admin/manage-users', authMiddleware, authorize('admin'), async (req
     }
 });
 
+/**
+ * @swagger
+ * /api/protected/courses/upload:
+ *   post:
+ *     summary: Upload courses
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *               file: 
+ *                 type: string
+ *                 format: binary
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *             example:
+ *               title: "JavaScript Course"
+ *               description: "Learn basics of JS"
+ *               category: "category"
+ *               level: "level"
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 
 router.post('/courses/upload', authMiddleware, authorize('admin', 'trainer'), upload.fields([
     { name: "thumbnail", maxCount: 1 },
@@ -286,11 +345,11 @@ router.post(
             const courseId = req.body?.courseId || (isTest ? "507f1f77bcf86cd799439011" : undefined);
             const assignmentName = req.body?.assignmentName || (isTest ? "test-assignment" : undefined);
 
-
+            // const { courseId, assignmentName } = req.body || {};
 
             console.log("FILE:", req.file);
             console.log("FILES:", req.files);
-            // const { courseId, assignmentName } = req.body || {};
+
 
             if (!req.file) {
                 return res.status(400).json({ message: "File missing" });
@@ -337,9 +396,10 @@ router.get(
         try {
             const submissions = await Submission.find({
                 courseId: req.params.courseId
-            }).populate("userId", "email");
+            }).populate("userId", "email").lean();
+            const validSubmissions = submissions.filter(sub => sub.userId);
 
-            res.json(submissions);
+            res.json(validSubmissions);
 
         } catch (err) {
             res.status(500).json({
@@ -597,11 +657,13 @@ router.get("/company/jobs", authMiddleware, authorize("company"), async (req, re
 /**
  * @swagger
  * /api/protected/jobs:
- *   post:
- *     summary: Create a job
+ *   get:
+ *     summary: Get all jobs
+ *     security:
+ *         - cookieAuth: []
  *     responses:
  *       200:
- *         description: Job created
+ *         description: OK
  */
 
 router.get("/jobs", authMiddleware, authorize("student"), async (req, res) => {
@@ -613,6 +675,18 @@ router.get("/jobs", authMiddleware, authorize("student"), async (req, res) => {
         res.json("error fecthing jobs", error)
     }
 });
+
+/**
+ * @swagger
+ * /api/protected/jobs:
+ *   post:
+ *     summary: Create a job
+ *     security:
+ *          -cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Job created
+ */
 router.post("/jobs", authMiddleware, authorize("company"), async (req, res) => {
     try {
         const { title, description } = req.body;

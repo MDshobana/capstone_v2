@@ -311,33 +311,68 @@ router.post('/logout', (req, res) => {
 })
 
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: shobanaa10@gmail.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "********"
+ *              
+ *                
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
+
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email, isVerified: true });
-    if (!user) {
-        return res.status(400).json({ message: "Invalid credentials" });
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email, isVerified: true });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials" });
 
-    }
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-        return res.status(400).json({ message: "Password doesnot match" })
-    }
-
-    jwt.sign({ id: user._id.toString(), email: user.email, role: user.role }, process.env.secret, { expiresIn: '1hr' }, (err, token) => {
-        if (err) {
-            console.log("Error generating toekn:", err);
         }
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true, // process.env.NODE_ENV === 'production',
-            sameSite: "none",
-            maxAge: 60 * 60 * 1000
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(400).json({ message: "Password doesnot match" })
+        }
 
-        })
-        return res.json({ user: { email: user.email, role: user.role }, message: "Login successful" });
-    });
+        jwt.sign({ id: user._id.toString(), email: user.email, role: user.role }, process.env.secret, { expiresIn: '1hr' }, (err, token) => {
+            if (err) {
+                console.log("Error generating toekn:", err);
+            }
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true, // process.env.NODE_ENV === 'production',
+                sameSite: "none",
+                maxAge: 60 * 60 * 1000
 
-    console.log("Received login data:", req.body);
+            })
+            return res.json({ user: { email: user.email, role: user.role }, message: "Login successful" });
+        });
+
+        console.log("Received login data:", req.body);
+    } catch (err) {
+        console.error(err);   // 👈 IMPORTANT
+        res.status(500).json({ message: "Server error" });
+
+    }
 });
 
 export default router;
