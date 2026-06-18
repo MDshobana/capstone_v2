@@ -16,7 +16,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
+app.use("/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+        swaggerOptions: {
+            withCredentials: true
+        },
+
+    })
+);
 
 app.use(cors({
     origin: [
@@ -28,7 +36,7 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.connection || [], {
+mongoose.connect(process.env.connection1 || [], {
 }).then(() => {
     console.log("Connected to MongoDB");
 }).catch((error) => {

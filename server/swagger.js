@@ -1,3 +1,4 @@
+import { Component } from "react";
 import swaggerJSDoc from "swagger-jsdoc";
 
 const options = {
@@ -8,6 +9,25 @@ const options = {
       version: "1.0.0",
       description: "API documentation for SkillSphere backend"
     },
+    components:{
+      securitySchemes: {
+        cookieAuth:{
+          type: "apiKey",
+          in: "cookie",
+          name: "token"
+        },
+        bearerAuth: {
+          type:"http",
+          scheme: "bearer",
+          bearerFormat: "jwt",
+        }
+      }
+    },
+    security: [
+      {
+        cookieAuth:[]
+      }
+    ],
     servers: [
 
       {
@@ -15,13 +35,13 @@ const options = {
         description: "Local server"
       },
       {
-        url: "https://mylearningportal.site",
+        url: "https://mylearningportal.site/api/protected",
         description: "Production server"
       }
 
     ]
   },
-  apis: ["./routes/*.js"] // reads your route files
+  apis: ["./**/*.js"]  //["./server/routes/*.js"] // reads your route files
 };
 
 const swaggerSpec = swaggerJSDoc(options);
