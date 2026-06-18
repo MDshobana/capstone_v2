@@ -1,11 +1,13 @@
-import { useState } from 'react'
-import Login from './pages/login'
-import Register from './pages/register'
+import { useState } from 'react';
+import Login from './pages/login';
+import Home from './pages/homePage';
+import Register from './pages/register';
 import Activate from './pages/activate';
 import ForgotPassword, { ResetPassword } from './pages/forgotPassword';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from './components/navBar';
 import { AdminDashboard } from './pages/adminDashboard';
+import Footer from './components/footer';
 import { StudentDashboard } from './pages/studentDashboard';
 import { CompanyDashboard } from './pages/companyDashboard';
 import { TrainerDashboard } from './pages/trainerDashboard';
@@ -19,7 +21,8 @@ function App() {
     <BrowserRouter>
       {/* <NavBar /> */}
       <Routes>
-        <Route path='/' Component={Register} />
+        <Route path='/' Component={Home} />
+        <Route path='/register' Component={Register} />
         <Route path='/login' Component={Login} />
         <Route path='/activate' Component={Activate} />
         <Route path='/forgotpassword' Component={ForgotPassword} />
@@ -29,6 +32,7 @@ function App() {
         <Route path='/company-dashboard' Component={CompanyDashboard} />
         <Route path='/student-dashboard' Component={StudentDashboard} />
       </Routes>
+      <Footer />
     </BrowserRouter>
 
   );
