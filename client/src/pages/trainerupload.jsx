@@ -205,7 +205,6 @@ function TrainerSubmissions({ courseId }) {
                                                 rel="noopener noreferrer"
                                                 className="text-blue-500 underline text-sm"
                                             >
-                                                
                                                 View Submission
                                             </a>
                                             {console.log("FILE URL:", sub.fileUrl)}

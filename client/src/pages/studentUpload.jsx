@@ -5,7 +5,7 @@ import { useRef } from "react";
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 function StudentAssignment({ courseId, assignments = [] }) {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState({});
   const [submissions, setSubmissions] = useState([]);
   const fileRef = useRef(null);
   const [downloadCertificate, setDownloadCertificate] = useState(false);
@@ -16,14 +16,14 @@ function StudentAssignment({ courseId, assignments = [] }) {
 
   // ✅ Submit handler (with assignment name)
   const handleSubmit = async (assignment) => {
-
-    if (!file) {
+    const selectedFile = file[assignment];
+    if (!selectedFile) {
       alert("Please select file");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", selectedFile);
     formData.append("courseId", courseId);
     formData.append("assignmentName", assignment);
 
@@ -31,7 +31,14 @@ function StudentAssignment({ courseId, assignments = [] }) {
       await axios.post(
         `${API_URL}/api/protected/submit-assignment`,
         formData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+
+        }
       );
 
       alert("✅ Submitted");
@@ -147,7 +154,7 @@ function StudentAssignment({ courseId, assignments = [] }) {
                 ref={fileRef}
                 type="file"
                 accept="application/pdf"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => setFile(prev =>({...prev, [assignment]: e.target.files[0]}))}
                 disabled={isSubmitted}
                 className="mt-2 text-sm"
               />
