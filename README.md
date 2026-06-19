@@ -2,31 +2,30 @@
 ## Overview
 SkillSphere backend provides APIs for:
 
-Jobs & Applications
-Courses & Enrollment
-Quiz & Assignments
-AI Chat (OpenAI)
-Payments (Razorpay)
+Jobs & Applications\
+Courses & Enrollment\
+Quiz & Assignments\
+AI Chat (OpenAI)\
+Payments (Razorpay)\
 
 Built with Node.js, Express, MongoDB and fully tested.
 
 ## Tech Stack
 
-Node.js
-Express.js
-MongoDB (Mongoose)
-JWT Authentication
-Multer + Cloudinary
-Vitest + Supertest
+Node.js\
+Express.js\
+MongoDB (Mongoose)\
+JWT Authentication\
+Multer + Cloudinary\
+Vitest + Supertest\
 
 
-## Testing
-Fully tested backend
-Uses Vitest + Supertest
-In-memory DB with MongoMemoryServer
-External services mocked
-Run tests
-npm run test
+## Testin
+Fully tested backend\
+Uses Vitest + Supertest\
+In-memory DB with MongoMemoryServer\
+External services mocked\
+Run tests -> npm run test\
 
 ## Test Report
 After running tests, a report is generated:
@@ -36,59 +35,58 @@ test-results.xml
 /server/test-results.xml
 
 ## Coverage Report
-Run coverage
-npm run coverage
+Run coverage -> npm run coverage
 
 ## Output
 /coverage/index.html
 
 ## Open in browser to see:
 
-Lines coverage
-Functions coverage
-Branch coverage
+Lines coverage\
+Functions coverage\
+Branch coverage\
 
 
 ## Mocked Services
 To ensure isolated testing:
 
-OpenAI 
-Razorpay 
-Cloudinary 
-Multer (file uploads) 
+OpenAI \
+Razorpay \
+Cloudinary \
+Multer (file uploads) \
 
 
 ## Authentication
-Test mode bypass:
+Test mode bypass:\
 JavaScriptreq.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};
 
 ## API Documentation
-Swagger UI is available at:
+Swagger UI is available at:\
 https://api.mylearningportal.site/api-docs
 
 ## Run Locally
-npm install
-npm start
+cd client\ npm install -> npm run dev
+cd server\ npm install-> node server.js
 
 ## Test Status
-All tests passing
-Full API coverage
-External APIs mocked
+All tests passing\
+Full API coverage\
+External APIs mocked\
 
 ## Features
+Role-based access\
+File upload support\
+External API integrations\
 
-REST API architecture
-Role-based access
-File upload support
-External API integrations
-Fully testable backend
+## CI/CD Pipe line
+deploy.yml \
+gitHub actions 
 
 
 ## Future Improvements
 
-CI/CD pipeline
-Coverage badge
-Swagger auto-generation
+Coverage badge\
+Swagger auto-generation\
 
 
 Ready for production-level development
