@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -27,7 +27,7 @@ function Register() {
             await axios.post(`${API_URL}/api/auth/register`, regFormData);
             navigate("/login");
         } catch (error) {
-            console.log("An error occured during registeration:", error.response?.data || error.message);
+            console.log("An error occurred during registeration:", error.response?.data || error.message);
         };
     }
     return (
@@ -67,35 +67,50 @@ function Register() {
                     </p>
 
 
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
 
                         <input
                             type="text"
                             placeholder="First Name"
+                            name='firstName'
+                            value={regFormData.firstName}
+                            onChange={handleChange}
                             className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
                         />
 
                         <input
                             type="text"
                             placeholder="Last Name"
+                            name='lastName'
+                            value={regFormData.lastName}
+                            onChange={handleChange}
                             className="w-full border p-3 rounded-lg"
                         />
 
                         <input
                             type="number"
                             placeholder="Age"
+                            name='age'
+                            value={regFormData.age}
+                            onChange={handleChange}
                             className="w-full border p-3 rounded-lg"
                         />
 
                         <input
                             type="email"
                             placeholder="Email"
+                            name='email'
+                            value={regFormData.email}
+                            onChange={handleChange}
                             className="w-full border p-3 rounded-lg"
                         />
 
                         <input
                             type="password"
                             placeholder="Password"
+                            name='password'
+                            value={regFormData.password}
+                            onChange={handleChange}
                             className="w-full border p-3 rounded-lg"
                         />
 
