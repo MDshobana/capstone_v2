@@ -26,15 +26,13 @@ import Razorpay from "razorpay";
 import Activity from "../models/Activity.js";
 import authMiddleware from '../middleware/auth.js';
 import authorize from '../middleware/authorize.js';
-import axios from "axios";
+const multerLib = multer.default || multer;
 
-
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
 const router = express.Router();
 
 
-const assignmentStorage = multer.diskStorage({
+const assignmentStorage = multerLib.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "uploads/");
     },
