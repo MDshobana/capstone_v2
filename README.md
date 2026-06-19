@@ -6,7 +6,7 @@ Jobs & Applications\
 Courses & Enrollment\
 Quiz & Assignments\
 AI Chat (OpenAI)\
-Payments (Razorpay)\
+Payments (Razorpay)
 
 Built with Node.js, Express, MongoDB and fully tested.
 
@@ -17,7 +17,7 @@ Express.js\
 MongoDB (Mongoose)\
 JWT Authentication\
 Multer + Cloudinary\
-Vitest + Supertest\
+Vitest + Supertest
 
 
 ## Testin
@@ -25,10 +25,10 @@ Fully tested backend\
 Uses Vitest + Supertest\
 In-memory DB with MongoMemoryServer\
 External services mocked\
-Run tests -> npm run test\
+Run tests -> npm run test
 
 ## Test Report
-After running tests, a report is generated:
+After running tests, a report is generated:\
 test-results.xml
 
 ## Location:
@@ -44,7 +44,7 @@ Run coverage -> npm run coverage
 
 Lines coverage\
 Functions coverage\
-Branch coverage\
+Branch coverage
 
 
 ## Mocked Services
@@ -53,7 +53,7 @@ To ensure isolated testing:
 OpenAI \
 Razorpay \
 Cloudinary \
-Multer (file uploads) \
+Multer (file uploads) 
 
 
 ## Authentication
@@ -71,12 +71,12 @@ cd server\ npm install-> node server.js
 ## Test Status
 All tests passing\
 Full API coverage\
-External APIs mocked\
+External APIs mocked
 
 ## Features
 Role-based access\
 File upload support\
-External API integrations\
+External API integrations
 
 ## CI/CD Pipe line
 deploy.yml \
@@ -86,7 +86,9 @@ gitHub actions
 ## Future Improvements
 
 Coverage badge\
-Swagger auto-generation\
+Swagger auto-generation
 
 
-Ready for production-level development
+## Application URL
+https://mylearningportal.site
+
