@@ -96,6 +96,7 @@ const storage = new CloudinaryStorage({
             return {
                 folder: "assignments",
                 resource_type: "raw",
+                type: "upload",
                 public_id: file.originalname
             };
         }
