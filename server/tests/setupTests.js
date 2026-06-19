@@ -4,21 +4,25 @@ process.env.NODE_ENV = "test";
 console.log("✅ SETUP FILE LOADED");
 
 vi.mock("multer-storage-cloudinary", () => {
-    return {
-      CloudinaryStorage: class {}
-    };
-  });
-  
-  vi.mock("multer", () => ({
-    __esModule: true, 
-  
-    default: () => ({
+  return {
+    CloudinaryStorage: class { }
+  };
+});
+
+vi.mock("multer", () => ({
+  __esModule: true,
+
+  default: Object.assign(
+    () => ({
       single: () => (req, res, next) => {
-        req.file = { path: "https://mock-file.com/file.pdf" };
+        req.file = {
+          filename: "mock-file.pdf",
+          path: "https://mock-file.com/file.pdf"
+        };
         if (!req.body) req.body = {};
         next();
       },
-  
+
       fields: () => (req, res, next) => {
         req.files = {
           thumbnail: [{ path: "https://mock.com/thumb.jpg" }],
@@ -27,8 +31,17 @@ vi.mock("multer-storage-cloudinary", () => {
         if (!req.body) req.body = {};
         next();
       }
-    })
-  }));
+    }),
+
+    {
+    
+      diskStorage: () => ({
+        _mock: true // dummy value
+      })
+    }
+  )
+}));
+``
 
 // ✅ mocks
 vi.mock("openai", () => ({
@@ -55,12 +68,12 @@ vi.mock("../middleware/auth.js", () => ({
   default: (req, res, next) => {
     req.user = {
 
-    id: "507f1f77bcf86cd799439011",
-    role: "student"
+      id: "507f1f77bcf86cd799439011",
+      role: "student"
 
-  };
-  next();
-}
+    };
+    next();
+  }
 }));
 
 
