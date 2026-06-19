@@ -58,15 +58,17 @@ Multer (file uploads)
 
 ## Authentication
 Test mode bypass:\
-JavaScriptreq.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};
+req.user = {  id: "507f1f77bcf86cd799439011",  role: "student"};
 
 ## API Documentation
 Swagger UI is available at:\
 https://api.mylearningportal.site/api-docs
 
 ## Run Locally
-cd client\ npm install -> npm run dev
-cd server\ npm install-> node server.js
+cd client\ 
+npm install -> npm run dev
+cd server\ 
+npm install-> node server.js
 
 ## Test Status
 All tests passing\
