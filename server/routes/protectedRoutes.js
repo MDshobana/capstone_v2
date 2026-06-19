@@ -26,10 +26,24 @@ import Razorpay from "razorpay";
 import Activity from "../models/Activity.js";
 import authMiddleware from '../middleware/auth.js';
 import authorize from '../middleware/authorize.js';
+import axios from "axios";
 
+
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
 const router = express.Router();
 
+
+const assignmentStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, "_"));
+    }
+});
+
+const uploadAssignment = multer({ storage: assignmentStorage });
 
 
 const razorpay = new Razorpay({
@@ -97,7 +111,8 @@ const storage = new CloudinaryStorage({
                 folder: "assignments",
                 resource_type: "raw",
                 type: "upload",
-                public_id: file.originalname
+                access_mode: "public",
+                public_id: Date.now() + "-" + file.originalname.replace(/\s+/g, "_")
             };
         }
 
@@ -337,7 +352,7 @@ router.post(
     "/submit-assignment",
     authMiddleware,
     authorize("student"),
-    upload.single("file"),
+    uploadAssignment.single("file"),
     async (req, res) => {
         try {
 
@@ -350,7 +365,7 @@ router.post(
 
             console.log("FILE:", req.file);
             console.log("FILES:", req.files);
-
+            const fileUrl = `${req.protocol}://${req.headers.host}/uploads/${req.file.filename}`;
 
             if (!req.file) {
                 return res.status(400).json({ message: "File missing" });
@@ -364,15 +379,11 @@ router.post(
                 return res.status(400).json({ message: "assignmentName missing" });
             }
 
-            if (!req.file) {
-                return res.status(400).json({ message: "file missing" });
-            }
-
             const submission = new Submission({
                 userId: req.user.id,
                 courseId,
                 assignmentName,
-                fileUrl: req.file.path.replace("http://", "https://")
+                fileUrl: fileUrl
 
             });
 
@@ -820,4 +831,17 @@ router.get("/admin/revenue-report", authMiddleware, authorize("admin"), async (r
 
     res.json(report);
 });
+
+
+
+router.get("/download", async (req, res) => {
+    const fileUrl = req.query.url;
+
+    if (!fileUrl) {
+        return res.status(400).send("Missing file URL");
+    }
+
+    return res.redirect(fileUrl);
+});
+
 export default router;
